@@ -26,7 +26,9 @@ public static class DependencyInjection
 	private static void AddPersistence(this IServiceCollection services)
 	{
 		services.AddDbContext<ApplicationDbContext>(options =>
-			options.UseNpgsql("connectionString").UseSnakeCaseNamingConvention());
+			options
+				.UseNpgsql("Server=dpg-d1defjvfte5s73fipthg-a.oregon-postgres.render.com;Port=5432;Database=reporthub;Userid=reporthub_user;Password=6uvQfKOSLAuH1oZjH4uGEhWcMYHZKN0J;")
+				.UseSnakeCaseNamingConvention());
 	}
 
 	public static void AddServices(this IServiceCollection services)
