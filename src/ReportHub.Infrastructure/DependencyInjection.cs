@@ -1,5 +1,7 @@
-﻿using Azure.Identity;
+﻿using System.Text;
+using Azure.Identity;
 using Azure.Security.KeyVault.Secrets;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
@@ -7,6 +9,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Configuration.AzureKeyVault;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
+using Microsoft.IdentityModel.Tokens;
 using ReportHub.Application.Common.Interfaces;
 using ReportHub.Domain;
 using ReportHub.Infrastructure.Identity;
@@ -24,6 +27,8 @@ public static class DependencyInjection
 	public static IServiceCollection AddInfrastructureDependencies(this IServiceCollection services, IConfigurationBuilder configuration)
 	{
 		services.AddServices();
+		services.AddJwtAuthentication(configuration);
+		services.AddAuthorization();
 		services.AddPersistence(configuration);
 
 		return services;
@@ -75,6 +80,35 @@ public static class DependencyInjection
 
 		services.AddHttpContextAccessor();
 		services.AddScoped<ICurrentUserService, CurrentUserService>();
+	}
+
+	private static void AddJwtAuthentication(this IServiceCollection services, IConfigurationBuilder configuration)
+	{
+		services.AddAuthentication(options =>
+		{
+			options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+			options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+		})
+		.AddJwtBearer(options =>
+		{
+			var jwtOptions = configuration.Build().GetSection(nameof(JwtOptions)).Get<JwtOptions>();
+
+			options.Authority = jwtOptions.Issuer;
+			options.Audience = jwtOptions.Audience;
+			options.RequireHttpsMetadata = false;
+			options.SaveToken = true;
+			options.TokenValidationParameters = new()
+			{
+				ValidateIssuer = true,
+				ValidateAudience = true,
+				ValidateLifetime = true,
+				RequireExpirationTime = true,
+				ValidateIssuerSigningKey = true,
+				ValidIssuer = jwtOptions.Issuer,
+				ValidAudience = jwtOptions.Audience,
+				IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtOptions.SecurityKey)),
+			};
+		});
 	}
 
 	private static string GetConnectionString(KeyVaultOptions options, IConfigurationBuilder configuration)

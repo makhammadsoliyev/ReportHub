@@ -17,9 +17,12 @@ builder.Services.AddOpenApi();
 var app = builder.Build();
 
 app.UseSwaggerUi();
+
 await app.InitialiseDatabaseAsync();
 
 app.UseHttpsRedirection();
+
+app.UseAuthentication();
 
 app.UseAuthorization();
 
