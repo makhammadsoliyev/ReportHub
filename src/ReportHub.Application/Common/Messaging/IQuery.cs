@@ -2,4 +2,6 @@
 
 namespace ReportHub.Application.Common.Messaging;
 
-public interface IQuery<T> : IRequest<T>;
+public interface IQuery<out T> : IRequest<T>
+{
+}

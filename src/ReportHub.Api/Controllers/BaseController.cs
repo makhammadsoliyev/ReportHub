@@ -7,10 +7,10 @@ namespace ReportHub.Api.Controllers;
 [Route("[controller]")]
 public class BaseController : ControllerBase
 {
-	protected readonly ISender mediator;
-
 	protected BaseController(ISender mediator)
 	{
-		this.mediator = mediator;
+		Mediator = mediator;
 	}
+
+	protected ISender Mediator { get; }
 }

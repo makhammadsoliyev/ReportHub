@@ -10,7 +10,9 @@ public class UsersController(ISender mediator) : BaseController(mediator)
 	[HttpPost("register")]
 	public async Task<IActionResult> LoginAsync([FromBody] RegisterUserCommand command)
 	{
-		var result = await mediator.Send(command);
+		var result = await Mediator.Send(command);
+
+		throw new Exception("{\r\n  \"firstName\": \"string\",\r\n  \"lastName\": \"string\",\r\n  \"email\": \"string2asfgcdkj@gm.com\",\r\n  \"password\": \"S126512tring\"\r\n}");
 
 		return Ok(result);
 	}
@@ -18,7 +20,7 @@ public class UsersController(ISender mediator) : BaseController(mediator)
 	[HttpPost("login")]
 	public async Task<IActionResult> LoginAsync([FromBody] LoginUserCommand command)
 	{
-		var result = await mediator.Send(command);
+		var result = await Mediator.Send(command);
 
 		return Ok(result);
 	}

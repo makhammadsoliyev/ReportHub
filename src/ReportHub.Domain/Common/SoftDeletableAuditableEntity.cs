@@ -1,10 +1,9 @@
-﻿using Microsoft.AspNetCore.Identity;
-using ReportHub.Domain.Common;
+﻿namespace ReportHub.Domain.Common;
 
-namespace ReportHub.Domain;
-
-public class Role : IdentityRole<Guid>, IEntity, IAuditable, ISoftDeletable
+public abstract class SoftDeletableAuditableEntity : IEntity, IAuditable, ISoftDeletable
 {
+	public Guid Id { get; set; }
+
 	public Guid CreatedBy { get; set; }
 
 	public DateTime CreatedOnUtc { get; set; }

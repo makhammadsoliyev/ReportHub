@@ -1,6 +1,7 @@
-﻿using FluentValidation;
+﻿using System.Reflection;
+using FluentValidation;
 using Microsoft.Extensions.DependencyInjection;
-using System.Reflection;
+using ReportHub.Application.Common.Behaviors;
 
 namespace ReportHub.Application;
 
@@ -15,6 +16,7 @@ public static class DependencyInjection
 		services.AddMediatR(config =>
 		{
 			config.RegisterServicesFromAssembly(assembly);
+			config.AddOpenBehavior(typeof(LoggingBehavior<,>));
 		});
 
 		return services;

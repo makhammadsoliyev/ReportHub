@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using ReportHub.Domain;
 
-namespace ReportHub.Infrastructure.Persistence.Contexts;
+namespace ReportHub.Infrastructure.Persistence;
 
 public class ApplicationDbContext(DbContextOptions options) : IdentityDbContext<User, Role, Guid>(options)
 {

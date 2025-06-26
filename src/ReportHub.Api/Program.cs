@@ -1,8 +1,12 @@
+using ReportHub.Api.Extensions;
 using ReportHub.Application;
 using ReportHub.Infrastructure;
+using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Host.UseSerilog((context, configuration)
+	=> configuration.ReadFrom.Configuration(context.Configuration));
 builder.Services.AddApplicationDependencies();
 builder.Services.AddInfrastructureDependencies();
 builder.Services.AddControllers();
@@ -16,12 +20,15 @@ if (app.Environment.IsDevelopment())
 {
 	app.UseSwagger();
 	app.UseSwaggerUI();
+	await app.InitialiseDatabaseAsync();
 }
 
 app.UseHttpsRedirection();
 
 app.UseAuthorization();
 
+app.UseExceptionHandlerMiddleware();
+
 app.MapControllers();
 
-app.Run();
+await app.RunAsync();

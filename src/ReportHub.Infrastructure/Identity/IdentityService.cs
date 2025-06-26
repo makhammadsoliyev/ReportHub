@@ -14,10 +14,12 @@ public class IdentityService(UserManager<User> userManager) : IIdentityService
 		var identityResult = await userManager.CreateAsync(user, password);
 
 		if (!identityResult.Succeeded)
+		{
 			throw new UnauthorizedException(
 				identityResult.Errors
 					.Select(error => error.Description)
 					.Aggregate((previous, next) => previous + "\n" + next));
+		}
 	}
 
 	public async Task<User> LoginAsync(string email, string password)
@@ -28,7 +30,9 @@ public class IdentityService(UserManager<User> userManager) : IIdentityService
 		var identityResult = await userManager.CheckPasswordAsync(user, password);
 
 		if (!identityResult)
+		{
 			throw new UnauthorizedException("Invalid email or password");
+		}
 
 		return user;
 	}
