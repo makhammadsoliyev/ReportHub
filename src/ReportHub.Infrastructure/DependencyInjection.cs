@@ -1,12 +1,18 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Azure.Identity;
+using Azure.Security.KeyVault.Secrets;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Configuration.AzureKeyVault;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 using ReportHub.Application.Common.Interfaces;
 using ReportHub.Domain;
 using ReportHub.Infrastructure.Identity;
 using ReportHub.Infrastructure.Persistence;
 using ReportHub.Infrastructure.Persistence.Interceptors;
+using ReportHub.Infrastructure.Persistence.KeyVault;
 using ReportHub.Infrastructure.Time;
 using ReportHub.Infrastructure.Token;
 using ReportHub.Infrastructure.Users;
@@ -15,21 +21,29 @@ namespace ReportHub.Infrastructure;
 
 public static class DependencyInjection
 {
-	public static IServiceCollection AddInfrastructureDependencies(this IServiceCollection services)
+	public static IServiceCollection AddInfrastructureDependencies(this IServiceCollection services, IConfigurationBuilder configuration)
 	{
 		services.AddServices();
-		services.AddPersistence();
+		services.AddPersistence(configuration);
 
 		return services;
 	}
 
-	private static void AddPersistence(this IServiceCollection services)
+	private static void AddPersistence(this IServiceCollection services, IConfigurationBuilder configuration)
 	{
+		services.AddOptions<KeyVaultOptions>().BindConfiguration(nameof(KeyVaultOptions));
 		services.AddDbContext<ApplicationDbContext>((serviceProvider, options) =>
+		{
+			var keyVaultOptions = serviceProvider.GetService<IOptions<KeyVaultOptions>>().Value;
+			var connectionString = GetConnectionString(keyVaultOptions, configuration);
+
+			var interceptors = serviceProvider.GetServices<ISaveChangesInterceptor>();
+
 			options
-				.UseNpgsql("Server=report-hub.postgres.database.azure.com;Database=postgres;Port=5432;User Id=admin_report_hub;Password=Exadel1234!@#$;Ssl Mode=Require;")
-				.AddInterceptors(serviceProvider.GetServices<ISaveChangesInterceptor>())
-				.UseSnakeCaseNamingConvention());
+				.UseNpgsql(connectionString)
+				.AddInterceptors(interceptors)
+				.UseSnakeCaseNamingConvention();
+		});
 
 		services.AddScoped<ApplicationDbContextInitializer>();
 
@@ -61,5 +75,16 @@ public static class DependencyInjection
 
 		services.AddHttpContextAccessor();
 		services.AddScoped<ICurrentUserService, CurrentUserService>();
+	}
+
+	private static string GetConnectionString(KeyVaultOptions options, IConfigurationBuilder configuration)
+	{
+		var credential = new ClientSecretCredential(options.DirectoryId, options.ClientId, options.ClientSecret);
+		configuration.AddAzureKeyVault(options.KeyVaultUrl, options.ClientId, options.ClientSecret, new DefaultKeyVaultSecretManager());
+
+		var client = new SecretClient(new Uri(options.KeyVaultUrl), credential);
+		var connectionString = client.GetSecret("ProdConnection").Value.Value;
+
+		return connectionString;
 	}
 }
