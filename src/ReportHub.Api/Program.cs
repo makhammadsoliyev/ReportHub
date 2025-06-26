@@ -16,12 +16,9 @@ builder.Services.AddOpenApi();
 
 var app = builder.Build();
 
-if (app.Environment.IsDevelopment())
-{
-	app.UseSwagger();
-	app.UseSwaggerUI();
-	await app.InitialiseDatabaseAsync();
-}
+app.UseSwagger();
+app.UseSwaggerUI();
+await app.InitialiseDatabaseAsync();
 
 app.UseHttpsRedirection();
 
