@@ -3,11 +3,11 @@ using ReportHub.Application.Common.Messaging;
 
 namespace ReportHub.Application.Users.LoginUser;
 
-public class LoginUserCommand : ICommand<LoginUserDto>
+public class LoginUserCommand(string email, string password) : ICommand<LoginUserDto>
 {
-	public string Email { get; set; }
+	public string Email { get; set; } = email;
 
-	public string Password { get; set; }
+	public string Password { get; set; } = password;
 }
 
 public class LoginUserCommandHandler(ITokenService tokenService, IIdentityService identityService)
