@@ -27,7 +27,7 @@ public static class DependencyInjection
 	{
 		services.AddDbContext<ApplicationDbContext>((serviceProvider, options) =>
 			options
-				.UseNpgsql("Server=dpg-d1defjvfte5s73fipthg-a.oregon-postgres.render.com;Port=5432;Database=reporthub;Userid=reporthub_user;Password=6uvQfKOSLAuH1oZjH4uGEhWcMYHZKN0J;")
+				.UseNpgsql("Server=report-hub.postgres.database.azure.com;Port=5432;Database=postgres;Userid=admin_report_hub;Password=Exadel1234!@#$;")
 				.AddInterceptors(serviceProvider.GetServices<ISaveChangesInterceptor>())
 				.UseSnakeCaseNamingConvention());
 
