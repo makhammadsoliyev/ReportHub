@@ -1,14 +1,20 @@
 name: ReportHub  
 
 on: 
+  workflow_dispatch:
   push: 
     branches: [ "master" ]
   pull_request:
     branches: [ "master" ]
 
+env:
+  AZURE_WEBAPP_NAME: report-hub-exadel
+  AZURE_WEBAPP_PACKAGE_PATH: "./src/ReportHub.Api/publish"
+  API_PROJECT_PATH: "src/ReportHub.Api"
+
 jobs:
   build:
-
+    name: Build
     runs-on: ubuntu-latest
 
     steps:
@@ -22,11 +28,17 @@ jobs:
       run: dotnet restore
     - name: Build
       run: dotnet build --no-restore --verbosity normal
+    - name: Publish
+      run: dotnet publish -c Release -o ${{ env.API_PROJECT_PATH }}/report-hub
+    - name: Upload artifact for deployment job
+      uses: actions/upload-artifact@v4
+      with:
+        name: report-hub
+        path: ${{ env.API_PROJECT_PATH }}/report-hub
 
-  unit-tests:
-
+  unit-test:
+    name: Unit Test
     needs: build
-
     runs-on: ubuntu-latest
 
     steps:
@@ -42,3 +54,23 @@ jobs:
         run: dotnet build --no-restore
       - name: Test
         run: dotnet test --no-build --verbosity normal
+
+  deploy:
+    name: Deploy to Azure
+    runs-on: ubuntu-latest
+    needs: unit-test
+
+    steps:
+      - name: Download artifact from build job
+        uses: actions/download-artifact@v4
+        with:
+          name: report-hub 
+          path: ${{ env.AZURE_WEBAPP_NAME }}
+
+      - name: Deploy
+        uses: azure/webapps-deploy@v2
+        with:
+          app-name: ${{ env.AZURE_WEBAPP_NAME }}
+          publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
+          package: ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}
+      
