@@ -7,6 +7,20 @@ namespace ReportHub.Infrastructure.Persistence;
 
 public class ApplicationDbContext(DbContextOptions options) : IdentityDbContext<User, Role, Guid>(options)
 {
+	public DbSet<Customer> Customers { get; set; }
+
+	public DbSet<Invoice> Invoices { get; set; }
+
+	public DbSet<InvoiceItem> InvoiceItems { get; set; }
+
+	public DbSet<Item> Items { get; set; }
+
+	public DbSet<Organization> Organizations { get; set; }
+
+	public DbSet<OrganizationMember> OrganizationMembers { get; set; }
+
+	public DbSet<OrganizationRole> OrganizationRoles { get; set; }
+
 	protected override void OnModelCreating(ModelBuilder builder)
 	{
 		builder.ApplyConfigurationsFromAssembly(GetType().Assembly);
