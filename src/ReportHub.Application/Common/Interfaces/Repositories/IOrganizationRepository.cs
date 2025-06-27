@@ -5,7 +5,7 @@ namespace ReportHub.Application.Common.Interfaces.Repositories;
 
 public interface IOrganizationRepository
 {
-	public Task InsertAsync(Organization organization);
+	Task InsertAsync(Organization organization);
 
-	public Task<bool> AnyAsync(Expression<Func<Organization, bool>> expression);
+	Task<bool> AnyAsync(Expression<Func<Organization, bool>> expression);
 }
