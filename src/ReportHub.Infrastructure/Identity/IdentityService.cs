@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using ReportHub.Application.Common.Constants;
 using ReportHub.Application.Common.Exceptions;
-using ReportHub.Application.Common.Interfaces;
+using ReportHub.Application.Common.Interfaces.Services;
 using ReportHub.Domain;
 
 namespace ReportHub.Infrastructure.Identity;
@@ -20,6 +21,8 @@ public class IdentityService(UserManager<User> userManager) : IIdentityService
 					.Select(error => error.Description)
 					.Aggregate((previous, next) => previous + "\n" + next));
 		}
+
+		await userManager.AddToRoleAsync(user, UserRoles.User);
 	}
 
 	public async Task<User> LoginAsync(string email, string password)

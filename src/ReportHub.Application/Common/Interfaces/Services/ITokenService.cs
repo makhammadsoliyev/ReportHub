@@ -1,6 +1,6 @@
 ﻿using ReportHub.Domain;
 
-namespace ReportHub.Application.Common.Interfaces;
+namespace ReportHub.Application.Common.Interfaces.Services;
 
 public interface ITokenService
 {

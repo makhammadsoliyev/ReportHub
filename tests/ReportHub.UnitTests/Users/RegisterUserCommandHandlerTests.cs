@@ -2,7 +2,7 @@
 using FluentAssertions;
 using FluentValidation;
 using Moq;
-using ReportHub.Application.Common.Interfaces;
+using ReportHub.Application.Common.Interfaces.Services;
 using ReportHub.Application.Users.RegisterUser;
 using ReportHub.Domain;
 

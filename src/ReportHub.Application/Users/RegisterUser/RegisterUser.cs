@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using FluentValidation;
-using ReportHub.Application.Common.Interfaces;
+using ReportHub.Application.Common.Interfaces.Services;
 using ReportHub.Application.Common.Messaging;
 using ReportHub.Domain;
 

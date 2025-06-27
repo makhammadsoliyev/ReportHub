@@ -10,12 +10,14 @@ using Microsoft.Extensions.Configuration.AzureKeyVault;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
-using ReportHub.Application.Common.Interfaces;
+using ReportHub.Application.Common.Interfaces.Repositories;
+using ReportHub.Application.Common.Interfaces.Services;
 using ReportHub.Domain;
 using ReportHub.Infrastructure.Identity;
 using ReportHub.Infrastructure.Persistence;
 using ReportHub.Infrastructure.Persistence.Interceptors;
 using ReportHub.Infrastructure.Persistence.KeyVault;
+using ReportHub.Infrastructure.Persistence.Repositories;
 using ReportHub.Infrastructure.Time;
 using ReportHub.Infrastructure.Token;
 using ReportHub.Infrastructure.Users;
@@ -54,6 +56,16 @@ public static class DependencyInjection
 
 		services.AddScoped<ISaveChangesInterceptor, SoftDeleteInterceptor>();
 		services.AddScoped<ISaveChangesInterceptor, AuditableInterceptor>();
+
+		services.AddRepositories();
+	}
+
+	private static void AddRepositories(this IServiceCollection services)
+	{
+		services.AddScoped<IUserRepository, UserRepository>();
+		services.AddScoped<IOrganizationRepository, OrganizationRepository>();
+		services.AddScoped<IOrganizationRoleRepository, OrganizationRoleRepository>();
+		services.AddScoped<IOrganizationMemberRepository, OrganizationMemberRepository>();
 	}
 
 	private static void AddServices(this IServiceCollection services)
@@ -97,7 +109,7 @@ public static class DependencyInjection
 			options.Audience = jwtOptions.Audience;
 			options.RequireHttpsMetadata = false;
 			options.SaveToken = true;
-			options.TokenValidationParameters = new()
+			options.TokenValidationParameters = new TokenValidationParameters()
 			{
 				ValidateIssuer = true,
 				ValidateAudience = true,

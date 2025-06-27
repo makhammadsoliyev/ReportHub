@@ -1,6 +1,6 @@
 ﻿using MediatR;
 using Microsoft.Extensions.Logging;
-using ReportHub.Application.Common.Interfaces;
+using ReportHub.Application.Common.Interfaces.Services;
 
 namespace ReportHub.Application.Common.Behaviors;
 

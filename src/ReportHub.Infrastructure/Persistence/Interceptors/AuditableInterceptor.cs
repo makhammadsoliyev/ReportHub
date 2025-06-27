@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
-using ReportHub.Application.Common.Interfaces;
+using ReportHub.Application.Common.Interfaces.Services;
 using ReportHub.Domain.Common;
 
 namespace ReportHub.Infrastructure.Persistence.Interceptors;

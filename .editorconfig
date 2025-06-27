@@ -249,4 +249,7 @@ dotnet_diagnostic.SA1101.severity = none
 dotnet_diagnostic.SA1009.severity = none
 
 # S2139: Exceptions should be either logged or rethrown but not both
-dotnet_diagnostic.S2139.severity = none
+dotnet_diagnostic.S2139.severity = none 
+
+# SA1602: Enumeration items should be documented
+dotnet_diagnostic.SA1602.severity = none

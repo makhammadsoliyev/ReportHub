@@ -1,6 +1,6 @@
 ﻿using FluentAssertions;
 using Moq;
-using ReportHub.Application.Common.Interfaces;
+using ReportHub.Application.Common.Interfaces.Services;
 using ReportHub.Application.Users.LoginUser;
 using ReportHub.Domain;
 

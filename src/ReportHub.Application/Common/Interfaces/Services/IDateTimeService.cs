@@ -1,4 +1,4 @@
-﻿namespace ReportHub.Application.Common.Interfaces;
+﻿namespace ReportHub.Application.Common.Interfaces.Services;
 
 public interface IDateTimeService
 {

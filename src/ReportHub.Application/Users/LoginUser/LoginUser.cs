@@ -1,4 +1,4 @@
-﻿using ReportHub.Application.Common.Interfaces;
+﻿using ReportHub.Application.Common.Interfaces.Services;
 using ReportHub.Application.Common.Messaging;
 
 namespace ReportHub.Application.Users.LoginUser;

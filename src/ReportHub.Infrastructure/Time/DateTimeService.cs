@@ -1,4 +1,4 @@
-﻿using ReportHub.Application.Common.Interfaces;
+﻿using ReportHub.Application.Common.Interfaces.Services;
 
 namespace ReportHub.Infrastructure.Time;
 
