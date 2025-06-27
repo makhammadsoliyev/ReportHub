@@ -1,6 +1,5 @@
 ﻿using AutoMapper;
 using AutoMapper.QueryableExtensions;
-using MediatR;
 using Microsoft.EntityFrameworkCore;
 using ReportHub.Application.Common.Attributes;
 using ReportHub.Application.Common.Constants;
@@ -14,7 +13,7 @@ public class GetUserListQuery : IQuery<IEnumerable<GetUserListDto>>
 }
 
 [RequiresUserRole(UserRoles.Admin)]
-public class GetUserListQueryHandler(IMapper mapper, IUserRepository repository) : IRequestHandler<GetUserListQuery, IEnumerable<GetUserListDto>>
+public class GetUserListQueryHandler(IMapper mapper, IUserRepository repository) : IQueryHandler<GetUserListQuery, IEnumerable<GetUserListDto>>
 {
 	public async Task<IEnumerable<GetUserListDto>> Handle(GetUserListQuery request, CancellationToken cancellationToken)
 	{

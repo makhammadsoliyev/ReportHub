@@ -1,6 +1,7 @@
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using ReportHub.Application.Users.GetUserByEmail;
 using ReportHub.Application.Users.GetUserList;
 using ReportHub.Application.Users.LoginUser;
 using ReportHub.Application.Users.RegisterUser;
@@ -34,9 +35,17 @@ public class UsersController(ISender mediator) : BaseController(mediator)
 	}
 
 	[HttpGet]
-	public async Task<IActionResult> GetUsersList()
+	public async Task<IActionResult> GetListAsync()
 	{
 		var result = await Mediator.Send(new GetUserListQuery());
+
+		return Ok(result);
+	}
+
+	[HttpGet("{email}")]
+	public async Task<IActionResult> GetByEmailAsync([FromRoute] string email)
+	{
+		var result = await Mediator.Send(new GetUserByEmailQuery(email));
 
 		return Ok(result);
 	}

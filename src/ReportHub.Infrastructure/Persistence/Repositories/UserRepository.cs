@@ -12,6 +12,11 @@ public class UserRepository(ApplicationDbContext context) : IUserRepository
 		return await context.Users.AnyAsync(expression);
 	}
 
+	public async Task<User> Select(Expression<Func<User, bool>> expression)
+	{
+		return await context.Users.FirstOrDefaultAsync(expression);
+	}
+
 	public IQueryable<User> SelectAll()
 	{
 		return context.Users;
