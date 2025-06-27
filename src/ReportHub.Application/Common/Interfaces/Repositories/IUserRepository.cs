@@ -5,5 +5,7 @@ namespace ReportHub.Application.Common.Interfaces.Repositories;
 
 public interface IUserRepository
 {
-	public Task<bool> AnyAsync(Expression<Func<User, bool>> expression);
+	Task<bool> AnyAsync(Expression<Func<User, bool>> expression);
+
+	IQueryable<User> SelectAll();
 }

@@ -1,6 +1,7 @@
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using ReportHub.Application.Users.GetUserList;
 using ReportHub.Application.Users.LoginUser;
 using ReportHub.Application.Users.RegisterUser;
 
@@ -30,5 +31,13 @@ public class UsersController(ISender mediator) : BaseController(mediator)
 	public ActionResult<string> HealthCheck()
 	{
 		return Ok("This application is developed by Umidbek Maxammadsoliyev");
+	}
+
+	[HttpGet]
+	public async Task<IActionResult> GetUsersList()
+	{
+		var result = await Mediator.Send(new GetUserListQuery());
+
+		return Ok(result);
 	}
 }

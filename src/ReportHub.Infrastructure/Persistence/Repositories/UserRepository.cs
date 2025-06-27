@@ -11,4 +11,9 @@ public class UserRepository(ApplicationDbContext context) : IUserRepository
 	{
 		return await context.Users.AnyAsync(expression);
 	}
+
+	public IQueryable<User> SelectAll()
+	{
+		return context.Users;
+	}
 }
