@@ -5,4 +5,6 @@ namespace ReportHub.Application.Common.Interfaces.Repositories;
 public interface ICustomerRepository
 {
 	Task InsertAsync(Customer customer);
+
+	IQueryable<Customer> SelectAll();
 }

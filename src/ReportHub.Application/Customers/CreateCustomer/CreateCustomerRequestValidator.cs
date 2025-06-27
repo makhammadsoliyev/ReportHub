@@ -7,5 +7,7 @@ public class CreateCustomerRequestValidator : AbstractValidator<CreateCustomerRe
 	public CreateCustomerRequestValidator()
 	{
 		RuleFor(request => request.Name).NotEmpty().MaximumLength(200);
+		RuleFor(request => request.Email).NotEmpty().MaximumLength(200);
+		RuleFor(request => request.CountryCode).NotEmpty().MaximumLength(5);
 	}
 }
