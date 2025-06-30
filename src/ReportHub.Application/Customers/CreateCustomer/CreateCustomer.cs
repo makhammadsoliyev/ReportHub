@@ -1,5 +1,7 @@
 ﻿using AutoMapper;
 using FluentValidation;
+using ReportHub.Application.Common.Attributes;
+using ReportHub.Application.Common.Constants;
 using ReportHub.Application.Common.Interfaces.Repositories;
 using ReportHub.Application.Common.Messaging;
 using ReportHub.Domain;
@@ -14,6 +16,7 @@ public class CreateCustomerCommand(CreateCustomerRequest customer, Guid organiza
 	public Guid OrganizationId { get; set; } = organizationId;
 }
 
+[RequiresOrganizationRole(OrganizationRoles.Owner)]
 public class CreateCustomerCommandHandler(
 	IMapper mapper,
 	ICustomerRepository repository,
@@ -25,6 +28,7 @@ public class CreateCustomerCommandHandler(
 		await validator.ValidateAndThrowAsync(request.Customer, cancellationToken);
 
 		var customer = mapper.Map<Customer>(request.Customer);
+		customer.OrganizationId = request.OrganizationId;
 		await repository.InsertAsync(customer);
 
 		return customer.Id;

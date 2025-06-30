@@ -17,4 +17,13 @@ public class OrganizationMemberRepository(ApplicationDbContext context) : IOrgan
 		await context.AddAsync(organizationMember);
 		await context.SaveChangesAsync();
 	}
+
+	public async Task<List<string>> SelectRoleAsync(Guid userId)
+	{
+		return await context.OrganizationMembers
+			.Where(t => t.UserId == userId)
+			.Include(t => t.OrganizationRole)
+			.Select(t => t.OrganizationRole.Name)
+			.ToListAsync();
+	}
 }

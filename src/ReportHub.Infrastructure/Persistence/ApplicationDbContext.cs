@@ -1,11 +1,13 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using ReportHub.Application.Common.Interfaces.Services;
 using ReportHub.Domain;
 
 namespace ReportHub.Infrastructure.Persistence;
 
-public class ApplicationDbContext(DbContextOptions options) : IdentityDbContext<User, Role, Guid>(options)
+public class ApplicationDbContext(DbContextOptions options, ICurrentOrganizationService service)
+	: IdentityDbContext<User, Role, Guid>(options)
 {
 	public DbSet<Customer> Customers { get; set; }
 
@@ -27,6 +29,12 @@ public class ApplicationDbContext(DbContextOptions options) : IdentityDbContext<
 
 		base.OnModelCreating(builder);
 
+		ApplyIdentityEntityConfigurations(builder);
+		ApplyEntityQueryFilters(builder);
+	}
+
+	private static void ApplyIdentityEntityConfigurations(ModelBuilder builder)
+	{
 		builder.Ignore<IdentityUserLogin<Guid>>();
 		builder.Ignore<IdentityUserToken<Guid>>();
 		builder.Ignore<IdentityUserClaim<Guid>>();
@@ -43,5 +51,18 @@ public class ApplicationDbContext(DbContextOptions options) : IdentityDbContext<
 
 		builder.Entity<Role>().ToTable("roles");
 		builder.Entity<IdentityUserRole<Guid>>().ToTable("user_roles");
+	}
+
+	private void ApplyEntityQueryFilters(ModelBuilder builder)
+	{
+		builder.Entity<Customer>().HasQueryFilter(t => t.OrganizationId == service.OrganizationId && !t.IsDeleted);
+		builder.Entity<Invoice>().HasQueryFilter(t => t.OrganizationId == service.OrganizationId && !t.IsDeleted);
+		builder.Entity<InvoiceItem>().HasQueryFilter(t => t.OrganizationId == service.OrganizationId && !t.IsDeleted);
+		builder.Entity<Item>().HasQueryFilter(t => t.OrganizationId == service.OrganizationId && !t.IsDeleted);
+		builder.Entity<OrganizationMember>().HasQueryFilter(t => t.OrganizationId == service.OrganizationId && !t.IsDeleted);
+		builder.Entity<Organization>().HasQueryFilter(t => !t.IsDeleted);
+		builder.Entity<OrganizationRole>().HasQueryFilter(t => !t.IsDeleted);
+		builder.Entity<Role>().HasQueryFilter(t => !t.IsDeleted);
+		builder.Entity<User>().HasQueryFilter(t => !t.IsDeleted);
 	}
 }

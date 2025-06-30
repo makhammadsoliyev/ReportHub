@@ -5,7 +5,6 @@ using Microsoft.AspNetCore.Mvc;
 namespace ReportHub.Api.Controllers;
 
 [ApiController]
-[Route("[controller]")]
 [Authorize]
 public class BaseController : ControllerBase
 {

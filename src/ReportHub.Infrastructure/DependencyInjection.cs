@@ -4,7 +4,6 @@ using Azure.Security.KeyVault.Secrets;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Configuration.AzureKeyVault;
 using Microsoft.Extensions.DependencyInjection;
@@ -14,6 +13,7 @@ using ReportHub.Application.Common.Interfaces.Repositories;
 using ReportHub.Application.Common.Interfaces.Services;
 using ReportHub.Domain;
 using ReportHub.Infrastructure.Identity;
+using ReportHub.Infrastructure.Organizations;
 using ReportHub.Infrastructure.Persistence;
 using ReportHub.Infrastructure.Persistence.Interceptors;
 using ReportHub.Infrastructure.Persistence.KeyVault;
@@ -38,24 +38,25 @@ public static class DependencyInjection
 
 	private static void AddPersistence(this IServiceCollection services, IConfigurationBuilder configuration)
 	{
+		services.AddScoped<AuditableInterceptor>();
+		services.AddScoped<SoftDeleteInterceptor>();
+
 		services.AddOptions<KeyVaultOptions>().BindConfiguration(nameof(KeyVaultOptions));
 		services.AddDbContext<ApplicationDbContext>((serviceProvider, options) =>
 		{
 			var keyVaultOptions = serviceProvider.GetService<IOptions<KeyVaultOptions>>().Value;
 			var connectionString = GetConnectionString(keyVaultOptions, configuration);
 
-			var interceptors = serviceProvider.GetServices<ISaveChangesInterceptor>();
+			var softDeleteInterceptor = serviceProvider.GetRequiredService<SoftDeleteInterceptor>();
+			var auditableInterceptor = serviceProvider.GetRequiredService<AuditableInterceptor>();
 
 			options
 				.UseNpgsql(connectionString)
-				.AddInterceptors(interceptors)
+				.AddInterceptors(auditableInterceptor, softDeleteInterceptor)
 				.UseSnakeCaseNamingConvention();
 		});
 
 		services.AddScoped<ApplicationDbContextInitializer>();
-
-		services.AddScoped<ISaveChangesInterceptor, SoftDeleteInterceptor>();
-		services.AddScoped<ISaveChangesInterceptor, AuditableInterceptor>();
 
 		services.AddRepositories();
 	}
@@ -93,6 +94,7 @@ public static class DependencyInjection
 
 		services.AddHttpContextAccessor();
 		services.AddScoped<ICurrentUserService, CurrentUserService>();
+		services.AddScoped<ICurrentOrganizationService, CurrentOrganizationService>();
 	}
 
 	private static void AddJwtAuthentication(this IServiceCollection services, IConfigurationBuilder configuration)

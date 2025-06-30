@@ -6,8 +6,10 @@ using ReportHub.Application.Common.Messaging;
 
 namespace ReportHub.Application.Customers.GetCustomersList;
 
-public class GetCustomersListQuery : IQuery<IEnumerable<GetCustomersListDto>>
+public class GetCustomersListQuery(Guid organizationId)
+		: IQuery<IEnumerable<GetCustomersListDto>>, IOrganizationRequest
 {
+	public Guid OrganizationId { get; set; } = organizationId;
 }
 
 public class GetCustomersListQueryHandler(IMapper mapper, ICustomerRepository repository)
@@ -21,13 +23,5 @@ public class GetCustomersListQueryHandler(IMapper mapper, ICustomerRepository re
 			.ToListAsync(cancellationToken);
 
 		return customers;
-	}
-}
-
-public class GetCustomersListProfile : Profile
-{
-	public GetCustomersListProfile()
-	{
-
 	}
 }

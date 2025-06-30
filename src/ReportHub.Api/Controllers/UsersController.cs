@@ -8,6 +8,7 @@ using ReportHub.Application.Users.RegisterUser;
 
 namespace ReportHub.Api.Controllers;
 
+[Route("[controller]")]
 public class UsersController(ISender mediator) : BaseController(mediator)
 {
 	[AllowAnonymous]

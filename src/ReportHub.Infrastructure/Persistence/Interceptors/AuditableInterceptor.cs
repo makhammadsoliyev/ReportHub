@@ -9,12 +9,26 @@ public class AuditableInterceptor(IDateTimeService dateTimeService, ICurrentUser
 {
 	public override ValueTask<int> SavedChangesAsync(SaveChangesCompletedEventData eventData, int result, CancellationToken cancellationToken = default)
 	{
-		if (eventData.Context is null)
+		UpdateAuditProperties(eventData.Context);
+
+		return base.SavedChangesAsync(eventData, result, cancellationToken);
+	}
+
+	public override int SavedChanges(SaveChangesCompletedEventData eventData, int result)
+	{
+		UpdateAuditProperties(eventData.Context);
+
+		return base.SavedChanges(eventData, result);
+	}
+
+	private void UpdateAuditProperties(DbContext context)
+	{
+		if (context == null)
 		{
-			return base.SavedChangesAsync(eventData, result, cancellationToken);
+			return;
 		}
 
-		var entries = eventData.Context.ChangeTracker.Entries<IAuditable>();
+		var entries = context.ChangeTracker.Entries<IAuditable>();
 
 		foreach (var entry in entries)
 		{
@@ -25,11 +39,9 @@ public class AuditableInterceptor(IDateTimeService dateTimeService, ICurrentUser
 			}
 			else if (entry.State == EntityState.Modified)
 			{
-                entry.Entity.UpdatedOnUtc = dateTimeService.UtcNow;
-                entry.Entity.UpdatedBy = currentUserService.UserId;
-            }
+				entry.Entity.UpdatedOnUtc = dateTimeService.UtcNow;
+				entry.Entity.UpdatedBy = currentUserService.UserId;
+			}
 		}
-
-		return base.SavedChangesAsync(eventData, result, cancellationToken);
 	}
 }

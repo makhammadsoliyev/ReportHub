@@ -8,4 +8,6 @@ public interface IOrganizationMemberRepository
 	Task InsertAsync(OrganizationMember organizationMember);
 
 	Task<bool> AnyAsync(Expression<Func<OrganizationMember, bool>> expression);
+
+	Task<List<string>> SelectRoleAsync(Guid userId);
 }

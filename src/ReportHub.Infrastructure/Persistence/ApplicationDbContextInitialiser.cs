@@ -62,5 +62,27 @@ public class ApplicationDbContextInitializer(
 			await userManager.CreateAsync(admin, "Admin1234");
 			await userManager.AddToRoleAsync(admin, UserRoles.Admin);
 		}
+
+		var organizationRoles = new List<OrganizationRole>
+		{
+			new ()
+			{
+				Name = OrganizationRoles.Owner,
+			},
+			new ()
+			{
+				Name = OrganizationRoles.Admin,
+			},
+			new ()
+			{
+				Name = OrganizationRoles.Operator,
+			},
+		};
+
+		if (!await context.OrganizationRoles.AnyAsync())
+		{
+			await context.AddRangeAsync(organizationRoles);
+			await context.SaveChangesAsync();
+		}
 	}
 }
