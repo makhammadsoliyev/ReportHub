@@ -39,4 +39,24 @@ public class IdentityService(UserManager<User> userManager) : IIdentityService
 
 		return user;
 	}
+
+	public async Task<string> GenerateEmailConfirmationTokenAsync(User user)
+	{
+		return await userManager.GenerateEmailConfirmationTokenAsync(user);
+	}
+
+	public async Task<bool> ConfirmEmailAsync(User user, string token)
+	{
+		var result = await userManager.ConfirmEmailAsync(user, token);
+
+		if (!result.Succeeded)
+		{
+			throw new UnauthorizedException(
+				result.Errors
+					.Select(error => error.Description)
+					.Aggregate((previous, next) => previous + "\n" + next));
+		}
+
+		return result.Succeeded;
+	}
 }

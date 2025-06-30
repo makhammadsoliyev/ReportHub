@@ -7,4 +7,8 @@ public interface IIdentityService
 	Task RegisterAsync(User user, string password);
 
 	Task<User> LoginAsync(string email, string password);
+
+	Task<string> GenerateEmailConfirmationTokenAsync(User user);
+
+	Task<bool> ConfirmEmailAsync(User user, string token);
 }

@@ -1,0 +1,29 @@
+﻿using MailKit.Net.Smtp;
+using MailKit.Security;
+using Microsoft.Extensions.Options;
+using MimeKit;
+using MimeKit.Text;
+using ReportHub.Application.Common.Interfaces.Services;
+
+namespace ReportHub.Infrastructure.Email;
+
+public class EmailService(IOptions<SmtpEmailOptions> options) : IEmailService
+{
+	private readonly SmtpEmailOptions options = options.Value;
+
+	public async Task SendAsync(string toEmail, string subject, string body)
+	{
+		var message = new MimeMessage();
+		message.From.Add(new MailboxAddress("Umidbek Maxammadsoliyev", options.Email));
+		message.To.Add(new MailboxAddress("Dear User!", toEmail));
+		message.Subject = subject;
+		message.Body = new TextPart(TextFormat.Html) { Text = body };
+
+		using var smtp = new SmtpClient();
+
+		await smtp.ConnectAsync(options.Host, options.Port, SecureSocketOptions.StartTls);
+		await smtp.AuthenticateAsync(options.Email, options.Password);
+		await smtp.SendAsync(message);
+		await smtp.DisconnectAsync(true);
+	}
+}

@@ -1,4 +1,5 @@
-﻿using ReportHub.Application.Common.Interfaces.Services;
+﻿using ReportHub.Application.Common.Exceptions;
+using ReportHub.Application.Common.Interfaces.Services;
 using ReportHub.Application.Common.Messaging;
 
 namespace ReportHub.Application.Users.LoginUser;
@@ -16,6 +17,11 @@ public class LoginUserCommandHandler(ITokenService tokenService, IIdentityServic
 	public async Task<LoginUserDto> Handle(LoginUserCommand request, CancellationToken cancellationToken)
 	{
 		var user = await identityService.LoginAsync(request.Email, request.Password);
+		if (!user.EmailConfirmed)
+		{
+			throw new UnauthorizedException("Email is not confirmed");
+		}
+
 		var accessToken = await tokenService.GenerateAccessTokenAsync(user);
 
 		return new LoginUserDto

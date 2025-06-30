@@ -13,6 +13,7 @@ using Microsoft.IdentityModel.Tokens;
 using ReportHub.Application.Common.Interfaces.Repositories;
 using ReportHub.Application.Common.Interfaces.Services;
 using ReportHub.Domain;
+using ReportHub.Infrastructure.Email;
 using ReportHub.Infrastructure.Identity;
 using ReportHub.Infrastructure.Organizations;
 using ReportHub.Infrastructure.Persistence;
@@ -94,6 +95,9 @@ public static class DependencyInjection
 		services.AddHttpContextAccessor();
 		services.AddScoped<ICurrentUserService, CurrentUserService>();
 		services.AddScoped<ICurrentOrganizationService, CurrentOrganizationService>();
+
+		services.AddScoped<IEmailService, EmailService>();
+		services.AddOptions<SmtpEmailOptions>().BindConfiguration(nameof(SmtpEmailOptions));
 	}
 
 	private static void AddJwtAuthentication(this IServiceCollection services, IConfigurationBuilder configuration)

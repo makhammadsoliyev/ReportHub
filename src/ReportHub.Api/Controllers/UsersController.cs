@@ -1,6 +1,7 @@
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using ReportHub.Application.Users.ConfirmUserEmail;
 using ReportHub.Application.Users.GetUserByEmail;
 using ReportHub.Application.Users.GetUserList;
 using ReportHub.Application.Users.LoginUser;
@@ -33,6 +34,15 @@ public class UsersController(ISender mediator) : BaseController(mediator)
 	public ActionResult<string> HealthCheck()
 	{
 		return Ok("This application is developed by Umidbek Maxammadsoliyev");
+	}
+
+	[AllowAnonymous]
+	[HttpGet("email-confirmation")]
+	public async Task<IActionResult> ConfirmEmailAsync([FromQuery] Guid id, [FromQuery] string token)
+	{
+		var result = await Mediator.Send(new ConfirmUserEmailCommand(id, token));
+
+		return Ok(result);
 	}
 
 	[HttpGet]
