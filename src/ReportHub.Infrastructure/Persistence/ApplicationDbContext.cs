@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.DataProtection.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using ReportHub.Application.Common.Interfaces.Services;
@@ -7,7 +8,7 @@ using ReportHub.Domain;
 namespace ReportHub.Infrastructure.Persistence;
 
 public class ApplicationDbContext(DbContextOptions options, ICurrentOrganizationService service)
-	: IdentityDbContext<User, Role, Guid>(options)
+	: IdentityDbContext<User, Role, Guid>(options), IDataProtectionKeyContext
 {
 	public DbSet<Customer> Customers { get; set; }
 
@@ -22,6 +23,8 @@ public class ApplicationDbContext(DbContextOptions options, ICurrentOrganization
 	public DbSet<OrganizationMember> OrganizationMembers { get; set; }
 
 	public DbSet<OrganizationRole> OrganizationRoles { get; set; }
+
+	public DbSet<DataProtectionKey> DataProtectionKeys { get; set; }
 
 	protected override void OnModelCreating(ModelBuilder builder)
 	{

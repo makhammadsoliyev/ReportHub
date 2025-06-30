@@ -2,6 +2,7 @@
 using Azure.Identity;
 using Azure.Security.KeyVault.Secrets;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
@@ -85,7 +86,7 @@ public static class DependencyInjection
 		.AddEntityFrameworkStores<ApplicationDbContext>()
 		.AddDefaultTokenProviders();
 
-		services.AddDataProtection();
+		services.AddDataProtection().PersistKeysToDbContext<ApplicationDbContext>();
 		services.AddScoped<IIdentityService, IdentityService>();
 		services.AddOptions<JwtOptions>().BindConfiguration(nameof(JwtOptions));
 
