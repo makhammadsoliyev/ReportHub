@@ -29,7 +29,7 @@ public class LoginUserCommandHandlerTests
 			"wNS9pZGVudGl0eS9jbGFpbXMvbmFtZWlkZW50aWZpZXIiOiIwMTk3YWM0YS1hMzhhLTc2OTYtYWJiZC1kMWNhZDczYWU3MGEiLCJodHRwO" +
 			"i8vc2NoZW1hcy5taWNyb3NvZnQuY29tL3dzLzIwMDgvMDYvaWRlbnRpdHkvY2xhaW1zL3JvbGUiOiJhZG1pbiIsImV4cCI6MTc1MDk2MzY" +
 			"wMiwiaXNzIjoiUmVwb3J0SHViIiwiYXVkIjoiUmVwb3J0SHViIn0.GqjhRPvGsnCPlZzwdSSwN-W1_pDczChIEgo72FfwPaw";
-		var user = new User { Email = email };
+		var user = new User { Email = email, EmailConfirmed = true };
 
 		identityServiceMock.Setup(
 				service => service.LoginAsync(email, password))

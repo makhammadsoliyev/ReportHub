@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using FluentAssertions;
 using FluentValidation;
+using Microsoft.Extensions.Configuration;
 using Moq;
 using ReportHub.Application.Common.Interfaces.Services;
 using ReportHub.Application.Users.RegisterUser;
@@ -11,6 +12,8 @@ namespace ReportHub.UnitTests.Users;
 public class RegisterUserCommandHandlerTests
 {
 	private Mock<IMapper> mapperMock;
+	private Mock<IEmailService> emailServiceMock;
+	private Mock<IConfiguration> configurationMock;
 	private Mock<IIdentityService> identityServiceMock;
 	private Mock<IValidator<RegisterUserCommand>> validatorMock;
 
@@ -18,6 +21,8 @@ public class RegisterUserCommandHandlerTests
 	public void Setup()
 	{
 		mapperMock = new Mock<IMapper>();
+		emailServiceMock = new Mock<IEmailService>();
+		configurationMock = new Mock<IConfiguration>();
 		identityServiceMock = new Mock<IIdentityService>();
 		validatorMock = new Mock<IValidator<RegisterUserCommand>>();
 	}
@@ -44,8 +49,10 @@ public class RegisterUserCommandHandlerTests
 
 		identityServiceMock.Setup(service => service.RegisterAsync(user, password));
 
+		identityServiceMock.Setup(service => service.GenerateEmailConfirmationTokenAsync(user)).ReturnsAsync(string.Empty);
+
 		var handler = new RegisterUserCommandHandler(
-			mapperMock.Object, identityServiceMock.Object, validatorMock.Object);
+			mapperMock.Object, emailServiceMock.Object, configurationMock.Object, identityServiceMock.Object, validatorMock.Object);
 
 		// Act
 		var result = await handler.Handle(command, default);
@@ -56,6 +63,8 @@ public class RegisterUserCommandHandlerTests
 
 		mapperMock.Verify(mapper => mapper.Map<User>(It.IsAny<RegisterUserCommand>()), Times.Once);
 
-		identityServiceMock.Verify(identity => identity.RegisterAsync(It.IsAny<User>(), It.IsAny<string>()), Times.Once);
+		identityServiceMock.Verify(service => service.RegisterAsync(It.IsAny<User>(), It.IsAny<string>()), Times.Once);
+
+		identityServiceMock.Verify(service => service.GenerateEmailConfirmationTokenAsync(It.IsAny<User>()), Times.Once);
 	}
 }
