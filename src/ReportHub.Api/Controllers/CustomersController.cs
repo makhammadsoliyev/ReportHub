@@ -1,6 +1,7 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using ReportHub.Application.Customers.CreateCustomer;
+using ReportHub.Application.Customers.DeleteCustomer;
 using ReportHub.Application.Customers.GetCustomerById;
 using ReportHub.Application.Customers.GetCustomersList;
 using ReportHub.Application.Customers.UpdateCustomer;
@@ -38,6 +39,14 @@ public class CustomersController(ISender mediator) : BaseController(mediator)
 	public async Task<IActionResult> GetListAsync([FromRoute] Guid organizationId)
 	{
 		var result = await Mediator.Send(new GetCustomersListQuery(organizationId));
+
+		return Ok(result);
+	}
+
+	[HttpDelete("{id:guid}")]
+	public async Task<IActionResult> DeleteAsync([FromRoute] Guid id, [FromRoute] Guid organizationId)
+	{
+		var result = await Mediator.Send(new DeleteCustomerCommand(id, organizationId));
 
 		return Ok(result);
 	}

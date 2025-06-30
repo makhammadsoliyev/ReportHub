@@ -4,6 +4,7 @@ using Azure.Security.KeyVault.Secrets;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Configuration.AzureKeyVault;
 using Microsoft.Extensions.DependencyInjection;
@@ -38,21 +39,19 @@ public static class DependencyInjection
 
 	private static void AddPersistence(this IServiceCollection services, IConfigurationBuilder configuration)
 	{
-		services.AddScoped<AuditableInterceptor>();
-		services.AddScoped<SoftDeleteInterceptor>();
+		services.AddScoped<ISaveChangesInterceptor, AuditableInterceptor>();
+		services.AddScoped<ISaveChangesInterceptor, SoftDeleteInterceptor>();
 
 		services.AddOptions<KeyVaultOptions>().BindConfiguration(nameof(KeyVaultOptions));
 		services.AddDbContext<ApplicationDbContext>((serviceProvider, options) =>
 		{
 			var keyVaultOptions = serviceProvider.GetService<IOptions<KeyVaultOptions>>().Value;
 			var connectionString = GetConnectionString(keyVaultOptions, configuration);
-
-			var softDeleteInterceptor = serviceProvider.GetRequiredService<SoftDeleteInterceptor>();
-			var auditableInterceptor = serviceProvider.GetRequiredService<AuditableInterceptor>();
+			var interceptors = serviceProvider.GetServices<ISaveChangesInterceptor>();
 
 			options
 				.UseNpgsql(connectionString)
-				.AddInterceptors(auditableInterceptor, softDeleteInterceptor)
+				.AddInterceptors(interceptors)
 				.UseSnakeCaseNamingConvention();
 		});
 

@@ -7,18 +7,19 @@ namespace ReportHub.Infrastructure.Persistence.Interceptors;
 
 public class AuditableInterceptor(IDateTimeService dateTimeService, ICurrentUserService currentUserService) : SaveChangesInterceptor
 {
-	public override ValueTask<int> SavedChangesAsync(SaveChangesCompletedEventData eventData, int result, CancellationToken cancellationToken = default)
+	public override InterceptionResult<int> SavingChanges(DbContextEventData eventData, InterceptionResult<int> result)
 	{
 		UpdateAuditProperties(eventData.Context);
 
-		return base.SavedChangesAsync(eventData, result, cancellationToken);
+		return base.SavingChanges(eventData, result);
 	}
 
-	public override int SavedChanges(SaveChangesCompletedEventData eventData, int result)
+	public override ValueTask<InterceptionResult<int>> SavingChangesAsync(
+		DbContextEventData eventData, InterceptionResult<int> result, CancellationToken cancellationToken = default)
 	{
 		UpdateAuditProperties(eventData.Context);
 
-		return base.SavedChanges(eventData, result);
+		return base.SavingChangesAsync(eventData, result, cancellationToken);
 	}
 
 	private void UpdateAuditProperties(DbContext context)
