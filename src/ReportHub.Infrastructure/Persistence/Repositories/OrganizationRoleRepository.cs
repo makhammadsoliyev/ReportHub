@@ -3,13 +3,17 @@ using Microsoft.EntityFrameworkCore;
 using ReportHub.Application.Common.Interfaces.Repositories;
 using ReportHub.Domain;
 
-namespace ReportHub.Infrastructure.Persistence.Repositories
+namespace ReportHub.Infrastructure.Persistence.Repositories;
+
+public class OrganizationRoleRepository(ApplicationDbContext context) : IOrganizationRoleRepository
 {
-	public class OrganizationRoleRepository(ApplicationDbContext context) : IOrganizationRoleRepository
+	public IQueryable<OrganizationRole> SelectAll()
 	{
-		public async Task<OrganizationRole> SelectAsync(Expression<Func<OrganizationRole, bool>> expression)
-		{
-			return await context.OrganizationRoles.FirstOrDefaultAsync(expression);
-		}
+		return context.OrganizationRoles;
+	}
+
+	public async Task<OrganizationRole> SelectAsync(Expression<Func<OrganizationRole, bool>> expression)
+	{
+		return await context.OrganizationRoles.FirstOrDefaultAsync(expression);
 	}
 }

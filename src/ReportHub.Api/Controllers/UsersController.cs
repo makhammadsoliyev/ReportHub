@@ -37,7 +37,7 @@ public class UsersController(ISender mediator) : BaseController(mediator)
 	}
 
 	[AllowAnonymous]
-	[HttpGet("email-confirmation")]
+	[HttpPatch("email-confirmation")]
 	public async Task<IActionResult> ConfirmEmailAsync([FromQuery] Guid id, [FromQuery] string token)
 	{
 		var result = await Mediator.Send(new ConfirmUserEmailCommand(id, token));
