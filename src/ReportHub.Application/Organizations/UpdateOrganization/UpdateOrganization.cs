@@ -4,6 +4,7 @@ using ReportHub.Application.Common.Attributes;
 using ReportHub.Application.Common.Constants;
 using ReportHub.Application.Common.Exceptions;
 using ReportHub.Application.Common.Interfaces.Repositories;
+using ReportHub.Application.Common.Interfaces.Services;
 using ReportHub.Application.Common.Messaging;
 
 namespace ReportHub.Application.Organizations.UpdateOrganization;
@@ -20,12 +21,20 @@ public class UpdateOrganizationCommand(Guid id, string name, string countryCode)
 [RequiresUserRole(UserRoles.Admin)]
 public class UpdateOrganizationCommandHandler(
 	IMapper mapper,
+	ICountryService service,
 	IOrganizationRepository organizationRepository,
 	IValidator<UpdateOrganizationCommand> validator) : ICommandHandler<UpdateOrganizationCommand, Guid>
 {
 	public async Task<Guid> Handle(UpdateOrganizationCommand request, CancellationToken cancellationToken)
 	{
 		await validator.ValidateAndThrowAsync(request, cancellationToken);
+
+		var isValidCountryCode = await service.VerifyByAlphaCodeAsync(request.CountryCode);
+		if (!isValidCountryCode)
+		{
+			throw new BadRequestException("Invalid Country Code");
+		}
+
 		var isNameUnique = !await organizationRepository.AnyAsync(t => t.Name.ToLower() == request.Name.ToLower() && t.Id != request.Id);
 		if (!isNameUnique)
 		{
