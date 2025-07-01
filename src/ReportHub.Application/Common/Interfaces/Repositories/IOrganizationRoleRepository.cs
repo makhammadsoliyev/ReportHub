@@ -8,4 +8,6 @@ public interface IOrganizationRoleRepository
 	Task<OrganizationRole> SelectAsync(Expression<Func<OrganizationRole, bool>> expression);
 
 	IQueryable<OrganizationRole> SelectAll();
+
+	Task<bool> AnyAsync(Expression<Func<OrganizationRole, bool>> expression);
 }

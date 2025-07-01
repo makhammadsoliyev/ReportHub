@@ -10,4 +10,6 @@ public interface IOrganizationMemberRepository
 	Task<bool> AnyAsync(Expression<Func<OrganizationMember, bool>> expression);
 
 	Task<List<string>> SelectRoleAsync(Guid userId);
+
+	IQueryable<OrganizationMember> SelectAll();
 }

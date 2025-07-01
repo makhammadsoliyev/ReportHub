@@ -18,6 +18,11 @@ public class OrganizationMemberRepository(ApplicationDbContext context) : IOrgan
 		await context.SaveChangesAsync();
 	}
 
+	public IQueryable<OrganizationMember> SelectAll()
+	{
+		return context.OrganizationMembers.Include(t => t.User).Include(t => t.OrganizationRole);
+	}
+
 	public async Task<List<string>> SelectRoleAsync(Guid userId)
 	{
 		return await context.OrganizationMembers
