@@ -4,6 +4,7 @@ using ReportHub.Application.Common.Attributes;
 using ReportHub.Application.Common.Constants;
 using ReportHub.Application.Common.Exceptions;
 using ReportHub.Application.Common.Interfaces.Repositories;
+using ReportHub.Application.Common.Interfaces.Services;
 using ReportHub.Application.Common.Messaging;
 
 namespace ReportHub.Application.Customers.UpdateCustomer;
@@ -19,6 +20,7 @@ public class UpdateCustomerCommand(UpdateCustomerRequest customer, Guid organiza
 [RequiresOrganizationRole(OrganizationRoles.Owner, OrganizationRoles.Admin)]
 public class UpdateCustomerCommandHandler(
 	IMapper mapper,
+	ICountryService service,
 	ICustomerRepository repository,
 	IValidator<UpdateCustomerRequest> validator)
 	: ICommandHandler<UpdateCustomerCommand, Guid>
@@ -26,6 +28,11 @@ public class UpdateCustomerCommandHandler(
 	public async Task<Guid> Handle(UpdateCustomerCommand request, CancellationToken cancellationToken)
 	{
 		await validator.ValidateAndThrowAsync(request.Customer, cancellationToken);
+		var isValidCountryCode = await service.VerifyByAlphaCodeAsync(request.Customer.CountryCode);
+		if (!isValidCountryCode)
+		{
+			throw new BadRequestException("Invalid Country Code");
+		}
 
 		var customer = await repository.SelectAsync(t => t.Id == request.Customer.Id)
 			?? throw new NotFoundException($"Customer is not found with this: {request.Customer.Id}");

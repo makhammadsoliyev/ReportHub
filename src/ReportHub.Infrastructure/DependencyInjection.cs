@@ -14,6 +14,7 @@ using Microsoft.IdentityModel.Tokens;
 using ReportHub.Application.Common.Interfaces.Repositories;
 using ReportHub.Application.Common.Interfaces.Services;
 using ReportHub.Domain;
+using ReportHub.Infrastructure.Countries;
 using ReportHub.Infrastructure.Email;
 using ReportHub.Infrastructure.Identity;
 using ReportHub.Infrastructure.Organizations;
@@ -99,6 +100,14 @@ public static class DependencyInjection
 
 		services.AddScoped<IEmailService, EmailService>();
 		services.AddOptions<SmtpEmailOptions>().BindConfiguration(nameof(SmtpEmailOptions));
+
+		services.AddOptions<CountryOptions>().BindConfiguration(nameof(CountryOptions));
+		services.AddHttpClient<ICountryService, CountryService>((sp, client) =>
+		{
+			var options = sp.GetRequiredService<IOptions<CountryOptions>>().Value;
+
+			client.BaseAddress = new Uri(options.Url);
+		});
 	}
 
 	private static void AddJwtAuthentication(this IServiceCollection services, IConfigurationBuilder configuration)

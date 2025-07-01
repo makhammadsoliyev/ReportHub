@@ -2,7 +2,9 @@
 using FluentValidation;
 using ReportHub.Application.Common.Attributes;
 using ReportHub.Application.Common.Constants;
+using ReportHub.Application.Common.Exceptions;
 using ReportHub.Application.Common.Interfaces.Repositories;
+using ReportHub.Application.Common.Interfaces.Services;
 using ReportHub.Application.Common.Messaging;
 using ReportHub.Domain;
 
@@ -19,6 +21,7 @@ public class CreateCustomerCommand(CreateCustomerRequest customer, Guid organiza
 [RequiresOrganizationRole(OrganizationRoles.Owner, OrganizationRoles.Admin)]
 public class CreateCustomerCommandHandler(
 	IMapper mapper,
+	ICountryService service,
 	ICustomerRepository repository,
 	IValidator<CreateCustomerRequest> validator)
 	: ICommandHandler<CreateCustomerCommand, Guid>
@@ -26,6 +29,11 @@ public class CreateCustomerCommandHandler(
 	public async Task<Guid> Handle(CreateCustomerCommand request, CancellationToken cancellationToken)
 	{
 		await validator.ValidateAndThrowAsync(request.Customer, cancellationToken);
+		var isValidCountryCode = await service.VerifyByAlphaCodeAsync(request.Customer.CountryCode);
+		if (!isValidCountryCode)
+		{
+			throw new BadRequestException("Invalid Country Code");
+		}
 
 		var customer = mapper.Map<Customer>(request.Customer);
 		customer.OrganizationId = request.OrganizationId;
