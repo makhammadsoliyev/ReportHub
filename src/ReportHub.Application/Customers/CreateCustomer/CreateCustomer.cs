@@ -16,7 +16,7 @@ public class CreateCustomerCommand(CreateCustomerRequest customer, Guid organiza
 	public Guid OrganizationId { get; set; } = organizationId;
 }
 
-[RequiresOrganizationRole(OrganizationRoles.Owner)]
+[RequiresOrganizationRole(OrganizationRoles.Owner, OrganizationRoles.Admin)]
 public class CreateCustomerCommandHandler(
 	IMapper mapper,
 	ICustomerRepository repository,

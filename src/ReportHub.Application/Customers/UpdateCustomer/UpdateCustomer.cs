@@ -1,5 +1,7 @@
 ﻿using AutoMapper;
 using FluentValidation;
+using ReportHub.Application.Common.Attributes;
+using ReportHub.Application.Common.Constants;
 using ReportHub.Application.Common.Exceptions;
 using ReportHub.Application.Common.Interfaces.Repositories;
 using ReportHub.Application.Common.Messaging;
@@ -14,6 +16,7 @@ public class UpdateCustomerCommand(UpdateCustomerRequest customer, Guid organiza
 	public Guid OrganizationId { get; set; } = organizationId;
 }
 
+[RequiresOrganizationRole(OrganizationRoles.Owner, OrganizationRoles.Admin)]
 public class UpdateCustomerCommandHandler(
 	IMapper mapper,
 	ICustomerRepository repository,
@@ -28,6 +31,7 @@ public class UpdateCustomerCommandHandler(
 			?? throw new NotFoundException($"Customer is not found with this: {request.Customer.Id}");
 		customer.OrganizationId = request.OrganizationId;
 		mapper.Map(request.Customer, customer);
+		await repository.UpdateAsync(customer);
 
 		return customer.Id;
 	}

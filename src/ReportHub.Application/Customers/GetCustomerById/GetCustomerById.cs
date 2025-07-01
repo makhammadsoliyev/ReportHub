@@ -1,4 +1,6 @@
 ﻿using AutoMapper;
+using ReportHub.Application.Common.Attributes;
+using ReportHub.Application.Common.Constants;
 using ReportHub.Application.Common.Exceptions;
 using ReportHub.Application.Common.Interfaces.Repositories;
 using ReportHub.Application.Common.Messaging;
@@ -13,6 +15,7 @@ public class GetCustomerByIdQuery(Guid id, Guid organizationId)
 	public Guid OrganizationId { get; set; } = organizationId;
 }
 
+[RequiresOrganizationRole(OrganizationRoles.Owner, OrganizationRoles.Admin, OrganizationRoles.Operator)]
 public class GetCustomerByIdQueryHandler(IMapper mapper, ICustomerRepository repository)
 	: IQueryHandler<GetCustomerByIdQuery, GetCustomerByIdDto>
 {

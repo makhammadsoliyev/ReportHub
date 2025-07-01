@@ -1,4 +1,6 @@
 ﻿using AutoMapper;
+using ReportHub.Application.Common.Attributes;
+using ReportHub.Application.Common.Constants;
 using ReportHub.Application.Common.Exceptions;
 using ReportHub.Application.Common.Interfaces.Repositories;
 using ReportHub.Application.Common.Messaging;
@@ -10,6 +12,7 @@ public class GetUserByEmailQuery(string email) : IQuery<GetUserByEmailDto>
 	public string Email { get; set; } = email;
 }
 
+[RequiresUserRole(UserRoles.Admin)]
 public class GetUserByEmailQueryHandler(IMapper mapper, IUserRepository repository)
 	: IQueryHandler<GetUserByEmailQuery, GetUserByEmailDto>
 {

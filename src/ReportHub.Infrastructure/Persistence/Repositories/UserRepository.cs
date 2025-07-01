@@ -12,6 +12,12 @@ public class UserRepository(ApplicationDbContext context) : IUserRepository
 		return await context.Users.AnyAsync(expression);
 	}
 
+	public async Task<bool> DeleteAsync(User user)
+	{
+		context.Users.Remove(user);
+		return await context.SaveChangesAsync() > 0;
+	}
+
 	public async Task<User> Select(Expression<Func<User, bool>> expression)
 	{
 		return await context.Users.FirstOrDefaultAsync(expression);

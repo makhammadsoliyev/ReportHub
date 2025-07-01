@@ -11,5 +11,7 @@ public interface ICustomerRepository
 
 	Task<bool> DeleteAsync(Customer customer);
 
+	Task UpdateAsync(Customer customer);
+
 	IQueryable<Customer> SelectAll();
 }

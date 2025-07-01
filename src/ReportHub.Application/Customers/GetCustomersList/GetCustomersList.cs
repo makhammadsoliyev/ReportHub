@@ -1,6 +1,8 @@
 ﻿using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using Microsoft.EntityFrameworkCore;
+using ReportHub.Application.Common.Attributes;
+using ReportHub.Application.Common.Constants;
 using ReportHub.Application.Common.Interfaces.Repositories;
 using ReportHub.Application.Common.Messaging;
 
@@ -12,6 +14,7 @@ public class GetCustomersListQuery(Guid organizationId)
 	public Guid OrganizationId { get; set; } = organizationId;
 }
 
+[RequiresOrganizationRole(OrganizationRoles.Owner, OrganizationRoles.Admin, OrganizationRoles.Operator)]
 public class GetCustomersListQueryHandler(IMapper mapper, ICustomerRepository repository)
 	: IQueryHandler<GetCustomersListQuery, IEnumerable<GetCustomersListDto>>
 {

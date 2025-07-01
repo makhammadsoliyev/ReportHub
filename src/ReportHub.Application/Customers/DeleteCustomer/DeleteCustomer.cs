@@ -1,4 +1,6 @@
-﻿using ReportHub.Application.Common.Exceptions;
+﻿using ReportHub.Application.Common.Attributes;
+using ReportHub.Application.Common.Constants;
+using ReportHub.Application.Common.Exceptions;
 using ReportHub.Application.Common.Interfaces.Repositories;
 using ReportHub.Application.Common.Messaging;
 
@@ -11,6 +13,7 @@ public class DeleteCustomerCommand(Guid id, Guid organizationId) : ICommand<bool
 	public Guid OrganizationId { get; set; } = organizationId;
 }
 
+[RequiresOrganizationRole(OrganizationRoles.Owner)]
 public class DeleteCustomerCommandHandler(ICustomerRepository repository)
 	: ICommandHandler<DeleteCustomerCommand, bool>
 {

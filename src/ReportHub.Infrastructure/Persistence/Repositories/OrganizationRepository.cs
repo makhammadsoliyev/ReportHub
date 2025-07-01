@@ -12,9 +12,31 @@ public class OrganizationRepository(ApplicationDbContext context) : IOrganizatio
 		return await context.Organizations.AnyAsync(expression);
 	}
 
+	public async Task<bool> DeleteAsync(Organization organization)
+	{
+		context.Organizations.Remove(organization);
+		return await context.SaveChangesAsync() > 0;
+	}
+
 	public async Task InsertAsync(Organization organization)
 	{
 		await context.AddAsync(organization);
+		await context.SaveChangesAsync();
+	}
+
+	public IQueryable<Organization> SelectAll()
+	{
+		return context.Organizations;
+	}
+
+	public Task<Organization> SelectAsync(Expression<Func<Organization, bool>> expression)
+	{
+		return context.Organizations.FirstOrDefaultAsync(expression);
+	}
+
+	public async Task UpdateAsync(Organization organization)
+	{
+		context.Update(organization);
 		await context.SaveChangesAsync();
 	}
 }

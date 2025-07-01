@@ -28,4 +28,10 @@ public class CustomerRepository(ApplicationDbContext context) : ICustomerReposit
 	{
 		return await context.Customers.FirstOrDefaultAsync(expression);
 	}
+
+	public async Task UpdateAsync(Customer customer)
+	{
+		context.Update(customer);
+		await context.SaveChangesAsync();
+	}
 }

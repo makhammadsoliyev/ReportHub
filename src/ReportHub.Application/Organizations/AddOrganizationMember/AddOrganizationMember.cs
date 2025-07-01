@@ -16,7 +16,7 @@ public class AddOrganizationMemberCommand(AddOrganizationMemberRequest organizat
 	public Guid OrganizationId { get; set; } = organizationId;
 }
 
-[RequiresOrganizationRole(OrganizationRoles.Owner)]
+[RequiresOrganizationRole(OrganizationRoles.Owner, OrganizationRoles.Admin)]
 public class AddOrganizationMemberHandler(
 	IMapper mapper,
 	IUserRepository userRepository,

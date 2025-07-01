@@ -2,6 +2,7 @@ using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using ReportHub.Application.Users.ConfirmUserEmail;
+using ReportHub.Application.Users.DeleteUser;
 using ReportHub.Application.Users.GetUserByEmail;
 using ReportHub.Application.Users.GetUserList;
 using ReportHub.Application.Users.LoginUser;
@@ -57,6 +58,14 @@ public class UsersController(ISender mediator) : BaseController(mediator)
 	public async Task<IActionResult> GetByEmailAsync([FromRoute] string email)
 	{
 		var result = await Mediator.Send(new GetUserByEmailQuery(email));
+
+		return Ok(result);
+	}
+
+	[HttpDelete("{id:guid}")]
+	public async Task<IActionResult> DeleteAsync([FromRoute] Guid id)
+	{
+		var result = await Mediator.Send(new DeleteUserCommand(id));
 
 		return Ok(result);
 	}

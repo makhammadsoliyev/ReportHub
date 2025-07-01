@@ -20,7 +20,10 @@ public class OrganizationMemberRepository(ApplicationDbContext context) : IOrgan
 
 	public IQueryable<OrganizationMember> SelectAll()
 	{
-		return context.OrganizationMembers.Include(t => t.User).Include(t => t.OrganizationRole);
+		return context.OrganizationMembers
+			.Include(t => t.User)
+			.Include(t => t.OrganizationRole)
+			.Include(t => t.Organization);
 	}
 
 	public async Task<List<string>> SelectRoleAsync(Guid userId)

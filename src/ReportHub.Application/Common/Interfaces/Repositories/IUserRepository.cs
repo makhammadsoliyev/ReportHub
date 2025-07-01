@@ -10,4 +10,6 @@ public interface IUserRepository
 	IQueryable<User> SelectAll();
 
 	Task<User> Select(Expression<Func<User, bool>> expression);
+
+	Task<bool> DeleteAsync(User user);
 }
