@@ -1,8 +1,6 @@
 ﻿namespace ReportHub.Application.Common.Interfaces.Services;
 
-public interface ICountryService
+public interface ICurrencyService
 {
 	Task<bool> VerifyByAlphaCodeAsync(string alphaCode);
-
-	Task<string> GetCurrencyCodeByCountryCodeAsync(string alphaCode);
 }

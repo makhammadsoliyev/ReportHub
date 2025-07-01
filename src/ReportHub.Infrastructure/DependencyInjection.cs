@@ -15,6 +15,7 @@ using ReportHub.Application.Common.Interfaces.Repositories;
 using ReportHub.Application.Common.Interfaces.Services;
 using ReportHub.Domain;
 using ReportHub.Infrastructure.Countries;
+using ReportHub.Infrastructure.Currencies;
 using ReportHub.Infrastructure.Email;
 using ReportHub.Infrastructure.Identity;
 using ReportHub.Infrastructure.Organizations;
@@ -66,6 +67,7 @@ public static class DependencyInjection
 	private static void AddRepositories(this IServiceCollection services)
 	{
 		services.AddScoped<IUserRepository, UserRepository>();
+		services.AddScoped<IInvoiceRepository, InvoiceRepository>();
 		services.AddScoped<ICustomerRepository, CustomerRepository>();
 		services.AddScoped<IOrganizationRepository, OrganizationRepository>();
 		services.AddScoped<IOrganizationRoleRepository, OrganizationRoleRepository>();
@@ -105,6 +107,14 @@ public static class DependencyInjection
 		services.AddHttpClient<ICountryService, CountryService>((sp, client) =>
 		{
 			var options = sp.GetRequiredService<IOptions<CountryOptions>>().Value;
+
+			client.BaseAddress = new Uri(options.Url);
+		});
+
+		services.AddOptions<CurrencyOptions>().BindConfiguration(nameof(CurrencyOptions));
+		services.AddHttpClient<ICurrencyService, CurrencyService>((sp, client) =>
+		{
+			var options = sp.GetRequiredService<IOptions<CurrencyOptions>>().Value;
 
 			client.BaseAddress = new Uri(options.Url);
 		});
