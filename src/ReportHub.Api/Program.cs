@@ -1,3 +1,5 @@
+using QuestPDF;
+using QuestPDF.Infrastructure;
 using ReportHub.Api.Extensions;
 using ReportHub.Application;
 using ReportHub.Infrastructure;
@@ -5,6 +7,7 @@ using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
 
+Settings.License = LicenseType.Community;
 builder.Host.UseSerilog((context, configuration)
 	=> configuration.ReadFrom.Configuration(context.Configuration));
 builder.Services.AddApplicationDependencies();

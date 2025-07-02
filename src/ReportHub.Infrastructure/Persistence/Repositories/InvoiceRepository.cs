@@ -27,7 +27,12 @@ public class InvoiceRepository(ApplicationDbContext context) : IInvoiceRepositor
 
 	public async Task<Invoice> SelectAsync(Expression<Func<Invoice, bool>> expression)
 	{
-		return await context.Invoices.Include(t => t.InvoiceItems).FirstOrDefaultAsync(expression);
+		return await context.Invoices
+			.Include(t => t.InvoiceItems)
+			.ThenInclude(t => t.Item)
+			.Include(t => t.Organization)
+			.Include(t => t.Customer)
+			.FirstOrDefaultAsync(expression);
 	}
 
 	public async Task UpdateAsync(Invoice invoice)

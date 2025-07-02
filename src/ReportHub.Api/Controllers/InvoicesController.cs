@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using ReportHub.Application.Invoices.AddInvoiceItem;
 using ReportHub.Application.Invoices.CreateInvoice;
 using ReportHub.Application.Invoices.DeleteInvoice;
+using ReportHub.Application.Invoices.ExportInvoice;
 using ReportHub.Application.Invoices.GetInvoiceById;
 using ReportHub.Application.Invoices.GetInvoiceItemList;
 using ReportHub.Application.Invoices.GetInvoicesList;
@@ -68,5 +69,13 @@ public class InvoicesController(ISender mediator) : BaseController(mediator)
 		var result = await Mediator.Send(new GetInvoiceItemListQuery(id, organizationId));
 
 		return Ok(result);
+	}
+
+	[HttpGet("{id:guid}/export")]
+	public async Task<IActionResult> ExportAsync([FromRoute] Guid id, [FromRoute] Guid organizationId)
+	{
+		var result = await Mediator.Send(new ExportInvoiceQuery(id, organizationId));
+
+		return File(result.Content, result.ContentType, result.FileName);
 	}
 }

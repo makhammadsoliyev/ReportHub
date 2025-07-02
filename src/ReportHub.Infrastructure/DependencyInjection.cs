@@ -19,6 +19,7 @@ using ReportHub.Infrastructure.Currencies;
 using ReportHub.Infrastructure.Email;
 using ReportHub.Infrastructure.Identity;
 using ReportHub.Infrastructure.Organizations;
+using ReportHub.Infrastructure.Pdf;
 using ReportHub.Infrastructure.Persistence;
 using ReportHub.Infrastructure.Persistence.Interceptors;
 using ReportHub.Infrastructure.Persistence.KeyVault;
@@ -66,6 +67,7 @@ public static class DependencyInjection
 
 	private static void AddRepositories(this IServiceCollection services)
 	{
+		services.AddScoped<IPdfService, PdfService>();
 		services.AddScoped<IUserRepository, UserRepository>();
 		services.AddScoped<IItemRepository, ItemRepository>();
 		services.AddScoped<IInvoiceRepository, InvoiceRepository>();
