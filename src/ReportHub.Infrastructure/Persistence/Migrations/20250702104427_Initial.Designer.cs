@@ -12,8 +12,8 @@ using ReportHub.Infrastructure.Persistence;
 namespace ReportHub.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250627070649_AddEntityConfigurations")]
-    partial class AddEntityConfigurations
+    [Migration("20250702104427_Initial")]
+    partial class Initial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -24,6 +24,29 @@ namespace ReportHub.Infrastructure.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
+
+            modelBuilder.Entity("Microsoft.AspNetCore.DataProtection.EntityFrameworkCore.DataProtectionKey", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasColumnName("id");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("FriendlyName")
+                        .HasColumnType("text")
+                        .HasColumnName("friendly_name");
+
+                    b.Property<string>("Xml")
+                        .HasColumnType("text")
+                        .HasColumnName("xml");
+
+                    b.HasKey("Id")
+                        .HasName("pk_data_protection_keys");
+
+                    b.ToTable("data_protection_keys", (string)null);
+                });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<System.Guid>", b =>
                 {
@@ -162,10 +185,6 @@ namespace ReportHub.Infrastructure.Migrations
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("issue_date");
 
-                    b.Property<int>("ItemsCount")
-                        .HasColumnType("integer")
-                        .HasColumnName("items_count");
-
                     b.Property<Guid>("OrganizationId")
                         .HasColumnType("uuid")
                         .HasColumnName("organization_id");
@@ -173,10 +192,6 @@ namespace ReportHub.Infrastructure.Migrations
                     b.Property<int>("PaymentStatus")
                         .HasColumnType("integer")
                         .HasColumnName("payment_status");
-
-                    b.Property<decimal>("Price")
-                        .HasColumnType("numeric")
-                        .HasColumnName("price");
 
                     b.Property<Guid?>("UpdatedBy")
                         .HasColumnType("uuid")
@@ -724,7 +739,7 @@ namespace ReportHub.Infrastructure.Migrations
             modelBuilder.Entity("ReportHub.Domain.InvoiceItem", b =>
                 {
                     b.HasOne("ReportHub.Domain.Invoice", "Invoice")
-                        .WithMany()
+                        .WithMany("InvoiceItems")
                         .HasForeignKey("InvoiceId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
@@ -791,6 +806,11 @@ namespace ReportHub.Infrastructure.Migrations
                     b.Navigation("OrganizationRole");
 
                     b.Navigation("User");
+                });
+
+            modelBuilder.Entity("ReportHub.Domain.Invoice", b =>
+                {
+                    b.Navigation("InvoiceItems");
                 });
 #pragma warning restore 612, 618
         }

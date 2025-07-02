@@ -1,8 +1,10 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using ReportHub.Application.Invoices.AddInvoiceItem;
 using ReportHub.Application.Invoices.CreateInvoice;
 using ReportHub.Application.Invoices.DeleteInvoice;
 using ReportHub.Application.Invoices.GetInvoiceById;
+using ReportHub.Application.Invoices.GetInvoiceItemList;
 using ReportHub.Application.Invoices.GetInvoicesList;
 using ReportHub.Application.Invoices.UpdateInvoice;
 
@@ -47,6 +49,23 @@ public class InvoicesController(ISender mediator) : BaseController(mediator)
 	public async Task<IActionResult> GetListAsync([FromRoute,] Guid organizationId)
 	{
 		var result = await Mediator.Send(new GetInvoicesListQuery(organizationId));
+
+		return Ok(result);
+	}
+
+	[HttpPost("{id:guid}/items")]
+	public async Task<IActionResult> AddItemAsync(
+		[FromBody] AddInvoiceItemRequest request, [FromRoute] Guid id, [FromRoute] Guid organizationId)
+	{
+		var result = await Mediator.Send(new AddInvoiceItemCommand(request, id, organizationId));
+
+		return Ok(result);
+	}
+
+	[HttpGet("{id:guid}/items")]
+	public async Task<IActionResult> GetItemsListAsync([FromRoute] Guid id, [FromRoute] Guid organizationId)
+	{
+		var result = await Mediator.Send(new GetInvoiceItemListQuery(id, organizationId));
 
 		return Ok(result);
 	}

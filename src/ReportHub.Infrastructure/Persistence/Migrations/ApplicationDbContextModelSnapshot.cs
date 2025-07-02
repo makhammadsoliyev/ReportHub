@@ -182,10 +182,6 @@ namespace ReportHub.Infrastructure.Migrations
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("issue_date");
 
-                    b.Property<int>("ItemsCount")
-                        .HasColumnType("integer")
-                        .HasColumnName("items_count");
-
                     b.Property<Guid>("OrganizationId")
                         .HasColumnType("uuid")
                         .HasColumnName("organization_id");
@@ -193,10 +189,6 @@ namespace ReportHub.Infrastructure.Migrations
                     b.Property<int>("PaymentStatus")
                         .HasColumnType("integer")
                         .HasColumnName("payment_status");
-
-                    b.Property<decimal>("Price")
-                        .HasColumnType("numeric")
-                        .HasColumnName("price");
 
                     b.Property<Guid?>("UpdatedBy")
                         .HasColumnType("uuid")
@@ -744,7 +736,7 @@ namespace ReportHub.Infrastructure.Migrations
             modelBuilder.Entity("ReportHub.Domain.InvoiceItem", b =>
                 {
                     b.HasOne("ReportHub.Domain.Invoice", "Invoice")
-                        .WithMany()
+                        .WithMany("InvoiceItems")
                         .HasForeignKey("InvoiceId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
@@ -811,6 +803,11 @@ namespace ReportHub.Infrastructure.Migrations
                     b.Navigation("OrganizationRole");
 
                     b.Navigation("User");
+                });
+
+            modelBuilder.Entity("ReportHub.Domain.Invoice", b =>
+                {
+                    b.Navigation("InvoiceItems");
                 });
 #pragma warning restore 612, 618
         }

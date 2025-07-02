@@ -22,12 +22,12 @@ public class InvoiceRepository(ApplicationDbContext context) : IInvoiceRepositor
 
 	public IQueryable<Invoice> SelectAll()
 	{
-		return context.Invoices;
+		return context.Invoices.Include(t => t.InvoiceItems);
 	}
 
 	public async Task<Invoice> SelectAsync(Expression<Func<Invoice, bool>> expression)
 	{
-		return await context.Invoices.FirstOrDefaultAsync(expression);
+		return await context.Invoices.Include(t => t.InvoiceItems).FirstOrDefaultAsync(expression);
 	}
 
 	public async Task UpdateAsync(Invoice invoice)

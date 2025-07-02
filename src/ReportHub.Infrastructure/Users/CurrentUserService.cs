@@ -6,7 +6,7 @@ namespace ReportHub.Infrastructure.Users;
 
 public class CurrentUserService(IHttpContextAccessor httpContextAccessor) : ICurrentUserService
 {
-	public Guid UserId => httpContextAccessor.HttpContext.User.GetUserId();
+	public Guid UserId => httpContextAccessor.HttpContext?.User.GetUserId() ?? Guid.Empty;
 
 	public string[] UserRoles => httpContextAccessor.HttpContext.User.GetUserRoles();
 }

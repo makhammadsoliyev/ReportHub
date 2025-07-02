@@ -8,9 +8,9 @@ public class Invoice : SoftDeletableAuditableEntity
 
 	public DateTime DueDate { get; set; }
 
-	public int ItemsCount { get; set; }
+	public int ItemsCount => InvoiceItems.Count;
 
-	public decimal Price { get; set; }
+	public decimal Price => InvoiceItems.Sum(t => t.Price);
 
 	public string CurrencyCode { get; set; }
 
@@ -25,4 +25,6 @@ public class Invoice : SoftDeletableAuditableEntity
 	public Guid OrganizationId { get; set; }
 
 	public Organization Organization { get; set; }
+
+	public IList<InvoiceItem> InvoiceItems { get; set; } = [];
 }

@@ -13,7 +13,7 @@ public class InvoiceItemConfiguration : IEntityTypeConfiguration<InvoiceItem>
 			.IsRequired();
 
 		builder.HasOne(invoiceItem => invoiceItem.Invoice)
-			.WithMany()
+			.WithMany(invoice => invoice.InvoiceItems)
 			.HasForeignKey(invoiceItem => invoiceItem.InvoiceId)
 			.IsRequired();
 

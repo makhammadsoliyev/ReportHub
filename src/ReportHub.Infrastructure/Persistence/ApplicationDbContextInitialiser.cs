@@ -52,6 +52,8 @@ public class ApplicationDbContextInitializer(
 
 		var admin = new User
 		{
+			FirstName = UserRoles.Admin,
+			LastName = UserRoles.Admin,
 			UserName = "admin@exadel.com",
 			Email = "admin@exadel.com",
 			EmailConfirmed = true,

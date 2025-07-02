@@ -22,5 +22,8 @@ public class InvoiceConfiguration : IEntityTypeConfiguration<Invoice>
 			.IsRequired();
 
 		builder.HasIndex(invoice => invoice.InvoiceNumber);
+
+		builder.Ignore(invoice => invoice.Price);
+		builder.Ignore(invoice => invoice.ItemsCount);
 	}
 }
