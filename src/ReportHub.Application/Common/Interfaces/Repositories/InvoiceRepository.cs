@@ -12,4 +12,6 @@ public interface IInvoiceRepository
 	Task<bool> DeleteAsync(Invoice invoice);
 
 	Task<Invoice> SelectAsync(Expression<Func<Invoice, bool>> expression);
+
+	IQueryable<Invoice> SelectAll();
 }

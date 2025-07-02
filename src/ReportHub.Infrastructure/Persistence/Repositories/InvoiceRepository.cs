@@ -20,6 +20,11 @@ public class InvoiceRepository(ApplicationDbContext context) : IInvoiceRepositor
 		await context.SaveChangesAsync();
 	}
 
+	public IQueryable<Invoice> SelectAll()
+	{
+		return context.Invoices;
+	}
+
 	public async Task<Invoice> SelectAsync(Expression<Func<Invoice, bool>> expression)
 	{
 		return await context.Invoices.FirstOrDefaultAsync(expression);
