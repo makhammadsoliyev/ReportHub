@@ -7,7 +7,7 @@ using ReportHub.Domain;
 
 namespace ReportHub.Infrastructure.Persistence;
 
-public class ApplicationDbContext(DbContextOptions options, ICurrentOrganizationService service)
+public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options, ICurrentOrganizationService service)
 	: IdentityDbContext<User, Role, Guid>(options), IDataProtectionKeyContext
 {
 	public DbSet<Customer> Customers { get; set; }
@@ -23,6 +23,10 @@ public class ApplicationDbContext(DbContextOptions options, ICurrentOrganization
 	public DbSet<OrganizationMember> OrganizationMembers { get; set; }
 
 	public DbSet<OrganizationRole> OrganizationRoles { get; set; }
+
+	public DbSet<Plan> Plans { get; set; }
+
+	public DbSet<PlanItem> PlanItems { get; set; }
 
 	public DbSet<DataProtectionKey> DataProtectionKeys { get; set; }
 
@@ -63,6 +67,8 @@ public class ApplicationDbContext(DbContextOptions options, ICurrentOrganization
 		builder.Entity<InvoiceItem>().HasQueryFilter(t => t.OrganizationId == service.OrganizationId && !t.IsDeleted);
 		builder.Entity<Item>().HasQueryFilter(t => t.OrganizationId == service.OrganizationId && !t.IsDeleted);
 		builder.Entity<OrganizationMember>().HasQueryFilter(t => t.OrganizationId == service.OrganizationId && !t.IsDeleted);
+		builder.Entity<Plan>().HasQueryFilter(t => t.OrganizationId == service.OrganizationId && !t.IsDeleted);
+		builder.Entity<PlanItem>().HasQueryFilter(t => t.OrganizationId == service.OrganizationId && !t.IsDeleted);
 		builder.Entity<Organization>().HasQueryFilter(t => !t.IsDeleted);
 		builder.Entity<OrganizationRole>().HasQueryFilter(t => !t.IsDeleted);
 		builder.Entity<Role>().HasQueryFilter(t => !t.IsDeleted);

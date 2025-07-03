@@ -70,6 +70,7 @@ public static class DependencyInjection
 		services.AddScoped<IPdfService, PdfService>();
 		services.AddScoped<IUserRepository, UserRepository>();
 		services.AddScoped<IItemRepository, ItemRepository>();
+		services.AddScoped<IPlanRepository, PlanRepository>();
 		services.AddScoped<IInvoiceRepository, InvoiceRepository>();
 		services.AddScoped<ICustomerRepository, CustomerRepository>();
 		services.AddScoped<IInvoiceItemRepository, InvoiceItemRepository>();
