@@ -26,12 +26,12 @@ public class PlanRepository(ApplicationDbContext context) : IPlanRepository
 
 	public IQueryable<Plan> SelectAll()
 	{
-		return context.Plans;
+		return context.Plans.Include(t => t.PlanItems);
 	}
 
 	public async Task<Plan> SelectAsync(Expression<Func<Plan, bool>> expression)
 	{
-		return await context.Plans.FirstOrDefaultAsync(expression);
+		return await context.Plans.Include(t => t.PlanItems).FirstOrDefaultAsync(expression);
 	}
 
 	public async Task UpdateAsync(Plan plan)

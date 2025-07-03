@@ -1,5 +1,6 @@
 ﻿using ReportHub.Application.Common.Attributes;
 using ReportHub.Application.Common.Constants;
+using ReportHub.Application.Common.Exceptions;
 using ReportHub.Application.Common.Interfaces.Repositories;
 using ReportHub.Application.Common.Messaging;
 
@@ -21,7 +22,7 @@ public class DeleteInvoiceItemCommandHandler(IInvoiceItemRepository repository)
 	public async Task<bool> Handle(DeleteInvoiceItemCommand request, CancellationToken cancellationToken)
 	{
 		var invoiceItem = await repository.SelectAsync(t => t.Id == request.Id)
-			?? throw new DirectoryNotFoundException($"Invoice Item is not found with this id: {request.Id}");
+			?? throw new NotFoundException($"Invoice Item is not found with this id: {request.Id}");
 
 		var result = await repository.DeleteAsync(invoiceItem);
 

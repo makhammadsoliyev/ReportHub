@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using ReportHub.Application.Invoices.AddInvoiceItem;
 using ReportHub.Application.Invoices.CreateInvoice;
 using ReportHub.Application.Invoices.DeleteInvoice;
+using ReportHub.Application.Invoices.DeleteInvoiceItem;
 using ReportHub.Application.Invoices.ExportInvoice;
 using ReportHub.Application.Invoices.GetInvoiceById;
 using ReportHub.Application.Invoices.GetInvoiceItemList;
@@ -59,6 +60,14 @@ public class InvoicesController(ISender mediator) : BaseController(mediator)
 		[FromBody] AddInvoiceItemRequest request, [FromRoute] Guid id, [FromRoute] Guid organizationId)
 	{
 		var result = await Mediator.Send(new AddInvoiceItemCommand(request, id, organizationId));
+
+		return Ok(result);
+	}
+
+	[HttpDelete("{id:guid}/items/{invoiceItemId:guid}")]
+	public async Task<IActionResult> DeleteItemAsync([FromRoute] Guid id, [FromRoute] Guid invoiceItemId, [FromRoute] Guid organizationId)
+	{
+		var result = await Mediator.Send(new DeleteInvoiceItemCommand(invoiceItemId, id, organizationId));
 
 		return Ok(result);
 	}

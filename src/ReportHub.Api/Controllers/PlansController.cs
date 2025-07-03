@@ -1,8 +1,11 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using ReportHub.Application.Plans.AddPlanItem;
 using ReportHub.Application.Plans.CreatePlan;
 using ReportHub.Application.Plans.DeletePlan;
+using ReportHub.Application.Plans.DeletePlanItem;
 using ReportHub.Application.Plans.GetPlanById;
+using ReportHub.Application.Plans.GetPlanItemsList;
 using ReportHub.Application.Plans.GetPlansList;
 using ReportHub.Application.Plans.UpdatePlan;
 
@@ -47,6 +50,31 @@ public class PlansController(ISender mediator) : BaseController(mediator)
 	public async Task<IActionResult> GetListAsync([FromRoute] Guid organizationId)
 	{
 		var result = await Mediator.Send(new GetPlansListQuery(organizationId));
+
+		return Ok(result);
+	}
+
+	[HttpPost("{id:guid}/items")]
+	public async Task<IActionResult> AddItemAsync(
+		[FromBody] AddPlanItemRequest request, [FromRoute] Guid id, [FromRoute] Guid organizationId)
+	{
+		var result = await Mediator.Send(new AddPlanItemCommand(id, request, organizationId));
+
+		return Ok(result);
+	}
+
+	[HttpDelete("{id:guid}/items/{planItemId:guid}")]
+	public async Task<IActionResult> DeleteItemAsync([FromRoute] Guid id, [FromRoute] Guid planItemId, [FromRoute] Guid organizationId)
+	{
+		var result = await Mediator.Send(new DeletePlanItemCommand(planItemId, id, organizationId));
+
+		return Ok(result);
+	}
+
+	[HttpGet("{id:guid}/items")]
+	public async Task<IActionResult> GetItemsListAsync([FromRoute] Guid id, [FromRoute] Guid organizationId)
+	{
+		var result = await Mediator.Send(new GetPlanItemsListQuery(id, organizationId));
 
 		return Ok(result);
 	}
