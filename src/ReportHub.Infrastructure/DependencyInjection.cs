@@ -11,6 +11,11 @@ using Microsoft.Extensions.Configuration.AzureKeyVault;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
+using MongoDB.Bson;
+using MongoDB.Bson.Serialization;
+using MongoDB.Bson.Serialization.Conventions;
+using MongoDB.Bson.Serialization.Serializers;
+using MongoDB.Driver;
 using ReportHub.Application.Common.Interfaces.Repositories;
 using ReportHub.Application.Common.Interfaces.Services;
 using ReportHub.Domain;
@@ -23,6 +28,7 @@ using ReportHub.Infrastructure.Pdf;
 using ReportHub.Infrastructure.Persistence;
 using ReportHub.Infrastructure.Persistence.Interceptors;
 using ReportHub.Infrastructure.Persistence.KeyVault;
+using ReportHub.Infrastructure.Persistence.MongoDb;
 using ReportHub.Infrastructure.Persistence.Repositories;
 using ReportHub.Infrastructure.Time;
 using ReportHub.Infrastructure.Token;
@@ -62,12 +68,15 @@ public static class DependencyInjection
 
 		services.AddScoped<ApplicationDbContextInitializer>();
 
+		services.AddOptions<MongoDbOptions>().BindConfiguration(nameof(MongoDbOptions));
+		services.AddMongoDb(configuration);
+
 		services.AddRepositories();
 	}
 
 	private static void AddRepositories(this IServiceCollection services)
 	{
-		services.AddScoped<IPdfService, PdfService>();
+		services.AddScoped<ILogRepository, LogRepository>();
 		services.AddScoped<IUserRepository, UserRepository>();
 		services.AddScoped<IItemRepository, ItemRepository>();
 		services.AddScoped<IPlanRepository, PlanRepository>();
@@ -124,6 +133,8 @@ public static class DependencyInjection
 
 			client.BaseAddress = new Uri(options.Url);
 		});
+
+		services.AddScoped<IPdfService, PdfService>();
 	}
 
 	private static void AddJwtAuthentication(this IServiceCollection services, IConfigurationBuilder configuration)
@@ -164,5 +175,18 @@ public static class DependencyInjection
 		var connectionString = client.GetSecret("ProdConnection").Value.Value;
 
 		return connectionString;
+	}
+
+	private static void AddMongoDb(this IServiceCollection services, IConfigurationBuilder configuration)
+	{
+		BsonSerializer.RegisterSerializer(new GuidSerializer(GuidRepresentation.Standard));
+		ConventionRegistry.Register("camelCase", new ConventionPack { new CamelCaseElementNameConvention() }, _ => true);
+		ConventionRegistry.Register("EnumStringConvention", new ConventionPack { new EnumRepresentationConvention(BsonType.String) }, _ => true);
+
+		var options = configuration.Build().GetSection(nameof(MongoDbOptions)).Get<MongoDbOptions>();
+		var mongoClient = new MongoClient(options.ConnectionString);
+
+		services.AddSingleton<IMongoDatabase>(mongoClient.GetDatabase(options.DatabaseName));
+		services.AddSingleton<MongoDbContext>();
 	}
 }

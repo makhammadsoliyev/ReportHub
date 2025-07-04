@@ -4,6 +4,7 @@ using ReportHub.Application.Common.Exceptions;
 using ReportHub.Application.Common.Interfaces.Repositories;
 using ReportHub.Application.Common.Interfaces.Services;
 using ReportHub.Application.Common.Messaging;
+using ReportHub.Domain;
 
 namespace ReportHub.Application.Invoices.ExportInvoice;
 
@@ -15,21 +16,45 @@ public class ExportInvoiceQuery(Guid id, Guid organizationId) : IQuery<ExportInv
 }
 
 [RequiresOrganizationRole(OrganizationRoles.Owner, OrganizationRoles.Admin, OrganizationRoles.Operator)]
-public class ExportInvoiceQueryHandler(IPdfService service, IInvoiceRepository repository)
+public class ExportInvoiceQueryHandler(
+	IPdfService pdfService,
+	ILogRepository logRepository,
+	ICurrentUserService userService,
+	IDateTimeService dateTimeService,
+	IInvoiceRepository invoiceRepository)
 	: IQueryHandler<ExportInvoiceQuery, ExportInvoiceDto>
 {
 	public async Task<ExportInvoiceDto> Handle(ExportInvoiceQuery request, CancellationToken cancellationToken)
 	{
-		var invoice = await repository.SelectAsync(t => t.Id == request.Id)
+		var invoice = await invoiceRepository.SelectAsync(t => t.Id == request.Id)
 			?? throw new NotFoundException($"Invoice is not found with this id: {request.Id}");
-
-		var content = service.GeneratePdf(invoice);
-
-		return new ExportInvoiceDto
+		var log = new Log
 		{
-			Content = content,
-			ContentType = "application/pdf",
-			FileName = $"Invoice_{invoice.InvoiceNumber}",
+			InvoiceId = request.Id,
+			TimeStamp = dateTimeService.UtcNow,
+			UserId = userService.UserId,
+			Status = LogStatus.Success,
 		};
+
+		try
+		{
+			var content = pdfService.GeneratePdf(invoice);
+			var result = new ExportInvoiceDto
+			{
+				Content = content,
+				ContentType = "application/pdf",
+				FileName = $"Invoice_{invoice.InvoiceNumber}",
+			};
+			await logRepository.InsertAsync(log);
+
+			return result;
+		}
+		catch
+		{
+			log.Status = LogStatus.Failure;
+			await logRepository.InsertAsync(log);
+
+			throw;
+		}
 	}
 }
