@@ -7,6 +7,11 @@ namespace ReportHub.Infrastructure.Persistence.Repositories;
 
 public class CustomerRepository(ApplicationDbContext context) : ICustomerRepository
 {
+	public async Task<bool> AnyAsync(Expression<Func<Customer, bool>> expression)
+	{
+		return await context.Customers.AnyAsync(expression);
+	}
+
 	public async Task<bool> DeleteAsync(Customer customer)
 	{
 		context.Remove(customer);

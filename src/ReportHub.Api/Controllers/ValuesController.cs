@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using MongoDB.Driver;
-using MongoDB.Driver.Linq;
+using ReportHub.Application.Common.Interfaces.Services;
 using ReportHub.Domain;
 using ReportHub.Infrastructure.Persistence.MongoDb;
 
@@ -8,7 +7,7 @@ namespace ReportHub.Api.Controllers
 {
 	[Route("api/[controller]")]
 	[ApiController]
-	public class ValuesController(MongoDbContext context) : ControllerBase
+	public class ValuesController(MongoDbContext context, ICurrencyService service) : ControllerBase
 	{
 		[HttpPost]
 		public async Task<IActionResult> PostAsync([FromBody] Log log)
@@ -18,9 +17,11 @@ namespace ReportHub.Api.Controllers
 		}
 
 		[HttpGet]
-		public async Task<IActionResult> GetAsync()
+		public async Task<IActionResult> GetAsync(string from, string to, decimal amount, DateOnly date)
 		{
-			return Ok(await context.Logs.AsQueryable().ToListAsync());
+			var result = await service.ExchangeAsync(from, to, amount, date);
+
+			return Ok(result);
 		}
 	}
 }

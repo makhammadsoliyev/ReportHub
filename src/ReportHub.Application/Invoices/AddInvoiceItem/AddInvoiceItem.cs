@@ -43,7 +43,11 @@ public class AddInvoiceItemCommandHandler(
 		invoiceItem.InvoiceId = request.InvoiceId;
 		invoiceItem.OrganizationId = request.OrganizationId;
 		invoiceItem.CurrencyCode = invoice.CurrencyCode;
-		invoiceItem.Price = await service.ExchangeAsync(item.CurrencyCode, invoiceItem.CurrencyCode, item.Price * invoiceItem.ItemsCount);
+		invoiceItem.Price = await service.ExchangeAsync(
+			from: item.CurrencyCode,
+			to: invoiceItem.CurrencyCode,
+			amount: item.Price * invoiceItem.ItemsCount,
+			date: DateOnly.FromDateTime(invoice.IssueDate));
 
 		await invoiceItemRepository.InsertAsync(invoiceItem);
 

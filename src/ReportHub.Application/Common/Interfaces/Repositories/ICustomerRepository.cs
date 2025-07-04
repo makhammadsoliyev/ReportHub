@@ -7,11 +7,13 @@ public interface ICustomerRepository
 {
 	Task InsertAsync(Customer customer);
 
-	Task<Customer> SelectAsync(Expression<Func<Customer, bool>> expression);
+	Task UpdateAsync(Customer customer);
 
 	Task<bool> DeleteAsync(Customer customer);
 
-	Task UpdateAsync(Customer customer);
+	Task<Customer> SelectAsync(Expression<Func<Customer, bool>> expression);
 
 	IQueryable<Customer> SelectAll();
+
+	Task<bool> AnyAsync(Expression<Func<Customer, bool>> expression);
 }
