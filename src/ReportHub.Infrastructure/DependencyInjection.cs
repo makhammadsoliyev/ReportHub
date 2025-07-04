@@ -19,6 +19,7 @@ using MongoDB.Driver;
 using ReportHub.Application.Common.Interfaces.Repositories;
 using ReportHub.Application.Common.Interfaces.Services;
 using ReportHub.Domain;
+using ReportHub.Infrastructure.Aspose;
 using ReportHub.Infrastructure.Countries;
 using ReportHub.Infrastructure.Currencies;
 using ReportHub.Infrastructure.Email;
@@ -135,6 +136,7 @@ public static class DependencyInjection
 		});
 
 		services.AddScoped<IPdfService, PdfService>();
+		services.AddScoped<IAsposeService, AsposeService>();
 	}
 
 	private static void AddJwtAuthentication(this IServiceCollection services, IConfigurationBuilder configuration)

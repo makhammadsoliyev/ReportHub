@@ -83,7 +83,7 @@ public class InvoicesController(ISender mediator) : BaseController(mediator)
 		return Ok(result);
 	}
 
-	[HttpGet("{id:guid}/export")]
+	[HttpGet("{id:guid}/export-pdf")]
 	public async Task<IActionResult> ExportAsync([FromRoute] Guid id, [FromRoute] Guid organizationId)
 	{
 		var result = await Mediator.Send(new ExportInvoiceQuery(id, organizationId));
