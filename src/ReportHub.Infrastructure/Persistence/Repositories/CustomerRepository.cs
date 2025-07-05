@@ -24,6 +24,12 @@ public class CustomerRepository(ApplicationDbContext context) : ICustomerReposit
 		await context.SaveChangesAsync();
 	}
 
+	public async Task InsertAsync(IEnumerable<Customer> customers)
+	{
+		await context.AddRangeAsync(customers);
+		await context.SaveChangesAsync();
+	}
+
 	public IQueryable<Customer> SelectAll()
 	{
 		return context.Customers;

@@ -4,6 +4,7 @@ using ReportHub.Application.Customers.CreateCustomer;
 using ReportHub.Application.Customers.DeleteCustomer;
 using ReportHub.Application.Customers.GetCustomerById;
 using ReportHub.Application.Customers.GetCustomersList;
+using ReportHub.Application.Customers.ImportCustomers;
 using ReportHub.Application.Customers.UpdateCustomer;
 
 namespace ReportHub.Api.Controllers;
@@ -47,6 +48,14 @@ public class CustomersController(ISender mediator) : BaseController(mediator)
 	public async Task<IActionResult> DeleteAsync([FromRoute] Guid id, [FromRoute] Guid organizationId)
 	{
 		var result = await Mediator.Send(new DeleteCustomerCommand(id, organizationId));
+
+		return Ok(result);
+	}
+
+	[HttpPost("import")]
+	public async Task<IActionResult> ImportAsync(IFormFile file, [FromRoute] Guid organizationId)
+	{
+		var result = await Mediator.Send(new ImportCustomersCommand(file, organizationId));
 
 		return Ok(result);
 	}

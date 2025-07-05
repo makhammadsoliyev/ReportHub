@@ -7,6 +7,8 @@ public interface ICustomerRepository
 {
 	Task InsertAsync(Customer customer);
 
+	Task InsertAsync(IEnumerable<Customer> customers);
+
 	Task UpdateAsync(Customer customer);
 
 	Task<bool> DeleteAsync(Customer customer);

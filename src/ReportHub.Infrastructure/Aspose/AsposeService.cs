@@ -1,4 +1,5 @@
 ﻿using System.Collections;
+using System.Data;
 using System.Drawing;
 using Aspose.Cells;
 using Microsoft.EntityFrameworkCore;
@@ -51,6 +52,34 @@ public class AsposeService : IAsposeService
 		using (var workbookStream = await workbook.SaveToStreamAsync())
 		{
 			return workbookStream.ToArray();
+		}
+	}
+
+	public IEnumerable<Customer> ImportCustomers(Stream fileStream)
+	{
+		var workbook = new Workbook(fileStream);
+		var worksheet = workbook.Worksheets[0];
+
+		var options = new ExportTableOptions
+		{
+			ExportColumnName = true,
+		};
+
+		var dataTable = worksheet.Cells.ExportDataTable(
+			0,
+			0,
+			worksheet.Cells.MaxDataRow + 1,
+			worksheet.Cells.MaxColumn + 1,
+			options);
+
+		foreach (DataRow row in dataTable.Rows)
+		{
+			yield return new Customer
+			{
+				Name = row["Name"]?.ToString(),
+				CountryCode = row["CountryCode"]?.ToString(),
+				Email = row["Email"]?.ToString(),
+			};
 		}
 	}
 

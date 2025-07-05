@@ -1,6 +1,6 @@
-﻿namespace ReportHub.Application.Invoices.ExportInvoicesReport;
+﻿namespace ReportHub.Application.Reports.ExportReport;
 
-public class ExportInvoicesReportDto
+public class ExportReportDto
 {
 	public byte[] Content { get; set; }
 
