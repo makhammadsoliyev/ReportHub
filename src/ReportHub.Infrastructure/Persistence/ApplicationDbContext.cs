@@ -30,6 +30,8 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
 
 	public DbSet<DataProtectionKey> DataProtectionKeys { get; set; }
 
+	public DbSet<RefreshToken> RefreshTokens { get; set; }
+
 	protected override void OnModelCreating(ModelBuilder builder)
 	{
 		builder.ApplyConfigurationsFromAssembly(GetType().Assembly);

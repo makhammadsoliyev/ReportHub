@@ -6,6 +6,7 @@ using ReportHub.Application.Users.DeleteUser;
 using ReportHub.Application.Users.GetUserByEmail;
 using ReportHub.Application.Users.GetUserList;
 using ReportHub.Application.Users.LoginUser;
+using ReportHub.Application.Users.LoginUserWithRefreshToken;
 using ReportHub.Application.Users.RegisterUser;
 
 namespace ReportHub.Api.Controllers;
@@ -25,6 +26,15 @@ public class UsersController(ISender mediator) : BaseController(mediator)
 	[AllowAnonymous]
 	[HttpPost("login")]
 	public async Task<IActionResult> LoginAsync([FromBody] LoginUserCommand command)
+	{
+		var result = await Mediator.Send(command);
+
+		return Ok(result);
+	}
+
+	[AllowAnonymous]
+	[HttpPost("login-with-refresh-token")]
+	public async Task<IActionResult> LoginWithRefreshTokenAsync([FromBody] LoginUserWithRefreshTokenCommand command)
 	{
 		var result = await Mediator.Send(command);
 
