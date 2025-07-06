@@ -21,8 +21,8 @@ public class ItemConfiguration : IEntityTypeConfiguration<Item>
 			.IsRequired();
 
 		builder.HasOne(customer => customer.Organization)
-            .WithMany()
-            .HasForeignKey(customer => customer.OrganizationId)
-            .IsRequired();
-    }
+			.WithMany()
+			.HasForeignKey(customer => customer.OrganizationId)
+			.IsRequired();
+	}
 }

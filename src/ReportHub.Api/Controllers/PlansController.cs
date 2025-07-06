@@ -11,7 +11,7 @@ using ReportHub.Application.Plans.UpdatePlan;
 
 namespace ReportHub.Api.Controllers;
 
-[Route("organizations/{organizationId:guid}/[controller]")]
+[Route("organizations/{organizationId:guid}/plans")]
 public class PlansController(ISender mediator) : BaseController(mediator)
 {
 	[HttpPost]

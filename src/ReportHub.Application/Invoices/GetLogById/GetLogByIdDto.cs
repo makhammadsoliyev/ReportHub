@@ -1,6 +1,6 @@
 ﻿using ReportHub.Domain;
 
-namespace ReportHub.Application.ExportLogs.GetLogById;
+namespace ReportHub.Application.Invoices.GetLogById;
 
 public class GetLogByIdDto
 {

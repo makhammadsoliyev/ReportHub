@@ -6,7 +6,7 @@ using ReportHub.Infrastructure.Persistence.MongoDb;
 
 namespace ReportHub.Api.Controllers
 {
-	[Route("api/[controller]")]
+	[Route("api/values")]
 	[ApiController]
 	public class ValuesController(
 		MongoDbContext context,

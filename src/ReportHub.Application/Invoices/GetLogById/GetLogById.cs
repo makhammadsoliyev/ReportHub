@@ -5,7 +5,7 @@ using ReportHub.Application.Common.Exceptions;
 using ReportHub.Application.Common.Interfaces.Repositories;
 using ReportHub.Application.Common.Messaging;
 
-namespace ReportHub.Application.ExportLogs.GetLogById;
+namespace ReportHub.Application.Invoices.GetLogById;
 
 public class GetLogByIdQuery(Guid id, Guid organizationId) : IQuery<GetLogByIdDto>, IOrganizationRequest
 {

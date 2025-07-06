@@ -9,13 +9,15 @@ using ReportHub.Application.Invoices.GetInvoiceById;
 using ReportHub.Application.Invoices.GetInvoiceItemList;
 using ReportHub.Application.Invoices.GetInvoicesList;
 using ReportHub.Application.Invoices.GetInvoicesRevenueCalculation;
+using ReportHub.Application.Invoices.GetLogById;
+using ReportHub.Application.Invoices.GetLogsList;
 using ReportHub.Application.Invoices.GetNumberOfInvoices;
 using ReportHub.Application.Invoices.GetOverdueInvoicesAnalysis;
 using ReportHub.Application.Invoices.UpdateInvoice;
 
 namespace ReportHub.Api.Controllers;
 
-[Route("organizations/{organizationId:guid}/[controller]")]
+[Route("organizations/{organizationId:guid}/invoices")]
 public class InvoicesController(ISender mediator) : BaseController(mediator)
 {
 	[HttpPost]
@@ -111,6 +113,22 @@ public class InvoicesController(ISender mediator) : BaseController(mediator)
 	public async Task<IActionResult> GetOverdueAnalysisAsync([FromRoute] Guid organizationId)
 	{
 		var result = await Mediator.Send(new GetOverdueInvoicesAnalysisQuery(organizationId));
+
+		return Ok(result);
+	}
+
+	[HttpGet("logs/{id:guid}")]
+	public async Task<IActionResult> GetLogAsync([FromRoute] Guid id, [FromRoute] Guid organizationId)
+	{
+		var result = await Mediator.Send(new GetLogByIdQuery(id, organizationId));
+
+		return Ok(result);
+	}
+
+	[HttpGet("logs")]
+	public async Task<IActionResult> GetLogsListAsync([FromQuery] GetLogsListFilter filter, [FromRoute] Guid organizationId)
+	{
+		var result = await Mediator.Send(new GetLogsListQuery(filter, organizationId));
 
 		return Ok(result);
 	}

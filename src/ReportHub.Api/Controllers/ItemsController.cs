@@ -8,7 +8,7 @@ using ReportHub.Application.Items.UpdateItem;
 
 namespace ReportHub.Api.Controllers;
 
-[Route("organizations/{organizationId:guid}/[controller]")]
+[Route("organizations/{organizationId:guid}/items")]
 public class ItemsController(ISender mediator) : BaseController(mediator)
 {
 	[HttpPost]

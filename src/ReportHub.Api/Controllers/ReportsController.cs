@@ -4,7 +4,7 @@ using ReportHub.Application.Reports.ExportReport;
 
 namespace ReportHub.Api.Controllers;
 
-[Route("organizations/{organizationId:guid}/[controller]")]
+[Route("organizations/{organizationId:guid}/reports")]
 public class ReportsController(ISender mediator) : BaseController(mediator)
 {
 	[HttpGet("export")]

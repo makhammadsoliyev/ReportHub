@@ -11,7 +11,7 @@ using ReportHub.Application.Organizations.UpdateOrganization;
 
 namespace ReportHub.Api.Controllers;
 
-[Route("[controller]")]
+[Route("organizations")]
 public class OrganizationsController(ISender mediator) : BaseController(mediator)
 {
 	[HttpPost]

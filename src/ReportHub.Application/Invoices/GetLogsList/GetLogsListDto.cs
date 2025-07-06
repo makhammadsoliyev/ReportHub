@@ -1,6 +1,6 @@
 ﻿using ReportHub.Domain;
 
-namespace ReportHub.Application.ExportLogs.GetLogsList;
+namespace ReportHub.Application.Invoices.GetLogsList;
 
 public class GetLogsListDto
 {

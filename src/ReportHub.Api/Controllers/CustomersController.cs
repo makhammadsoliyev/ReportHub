@@ -9,7 +9,7 @@ using ReportHub.Application.Customers.UpdateCustomer;
 
 namespace ReportHub.Api.Controllers;
 
-[Route("organizations/{organizationId:guid}/[controller]")]
+[Route("organizations/{organizationId:guid}/customers")]
 public class CustomersController(ISender mediator) : BaseController(mediator)
 {
 	[HttpPost]

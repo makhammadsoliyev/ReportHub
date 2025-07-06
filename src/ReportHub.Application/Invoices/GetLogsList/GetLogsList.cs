@@ -4,7 +4,7 @@ using ReportHub.Application.Common.Constants;
 using ReportHub.Application.Common.Interfaces.Repositories;
 using ReportHub.Application.Common.Messaging;
 
-namespace ReportHub.Application.ExportLogs.GetLogsList;
+namespace ReportHub.Application.Invoices.GetLogsList;
 
 public class GetLogsListQuery(GetLogsListFilter filter, Guid organizationId)
 	: IQuery<IEnumerable<GetLogsListDto>>, IOrganizationRequest
