@@ -61,6 +61,7 @@ public class GetInvoicesRevenueCalculationQueryHandler(
 			Amount = exchangedAmounts.Sum(),
 			EndDate = request.Filter.EndDate,
 			StartDate = request.Filter.StartDate,
+			CustomerId = request.Filter.CustomerId,
 		};
 	}
 }

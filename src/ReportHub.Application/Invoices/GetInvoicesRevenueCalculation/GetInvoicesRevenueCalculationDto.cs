@@ -6,6 +6,8 @@ public class GetInvoicesRevenueCalculationDto
 
 	public DateTime? EndDate { get; set; }
 
+	public Guid? CustomerId { get; set; }
+
 	public decimal Amount { get; set; }
 
 	public string CurrencyCode { get; set; }
