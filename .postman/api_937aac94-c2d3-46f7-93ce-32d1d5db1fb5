@@ -17,5 +17,3 @@ files[] = {"id":"46521310-c3775269-0ab8-4fcd-af4d-1c1e6d74ed83","path":"Report H
 files[] = {"path":"index.json","metaData":{}}
 
 [config.relations.apiDefinition.metaData]
-type = openapi:3
-rootFiles[] = index.json
