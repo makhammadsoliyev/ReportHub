@@ -55,10 +55,27 @@ jobs:
       - name: Test
         run: dotnet test --no-build --verbosity normal
 
+  automated-api-tests:
+    name: Integration Test
+    needs: unit-test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Postman CLI
+        run: |
+          curl -o- "https://dl-cli.pstmn.io/install/linux64.sh" | sh
+      - name: Login to Postman CLI
+        run: postman login --with-api-key ${{ secrets.POSTMAN_API_KEY }}
+      - name: Run API tests
+        run: |
+          postman collection run "${{ github.workspace }}/tests/ReportHub.IntegrationTests/Report Hub.json" --integration-id "178987-${{ github.run_id }}"
+          # Lint your API using Postman CLI
+          postman api lint 937aac94-c2d3-46f7-93ce-32d1d5db1fb5 --integration-id 178987
+
   deploy:
     name: Deploy to Azure
     runs-on: ubuntu-latest
-    needs: unit-test
+    needs: automated-api-tests
 
     steps:
       - name: Download artifact from build job
