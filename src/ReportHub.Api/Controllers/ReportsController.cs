@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using ReportHub.Application.Reports.ExportReport;
 using ReportHub.Application.Reports.ScheduleReport;
+using ReportHub.Application.Reports.StopScheduleReport;
 
 namespace ReportHub.Api.Controllers;
 
@@ -12,6 +13,14 @@ public class ReportsController(ISender mediator) : BaseController(mediator)
 	public async Task<IActionResult> ScheduleAsync([FromRoute] Guid organizationId, TimeSpan interval)
 	{
 		var result = await Mediator.Send(new ScheduleReportCommand(organizationId, interval));
+
+		return Ok(result);
+	}
+
+	[HttpDelete]
+	public async Task<IActionResult> StopAsync([FromRoute] Guid organizationId)
+	{
+		var result = await Mediator.Send(new StopScheduleReportCommand(organizationId));
 
 		return Ok(result);
 	}

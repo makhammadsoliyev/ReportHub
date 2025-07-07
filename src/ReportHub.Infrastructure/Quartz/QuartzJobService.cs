@@ -1,4 +1,5 @@
 ﻿using Quartz;
+using ReportHub.Application.Common.Exceptions;
 using ReportHub.Application.Common.Interfaces.Services;
 
 namespace ReportHub.Infrastructure.Quartz;
@@ -21,7 +22,20 @@ public class QuartzJobService(ISchedulerFactory schedulerFactory) : IQuartzJobSe
 			.ForJob(job)
 			.WithSimpleSchedule(t => t.WithInterval(interval).RepeatForever())
 			.Build();
+		try
+		{
+			await scheduler.ScheduleJob(job, trigger);
+		}
+		catch (ObjectAlreadyExistsException exception)
+		{
+			throw new ConflictException(exception.Message);
+		}
+	}
 
-		await scheduler.ScheduleJob(job, trigger);
+	public async Task<bool> StopAsync(Guid userId)
+	{
+		var scheduler = await schedulerFactory.GetScheduler();
+
+		return await scheduler.DeleteJob(new JobKey($"{ReportEmailSenderJob.Name}_{userId}"));
 	}
 }
