@@ -9,6 +9,8 @@ public class CurrentUserService(IHttpContextAccessor httpContextAccessor) : ICur
 	public Guid UserId => httpContextAccessor.HttpContext?.User.GetUserId() ?? Guid.Empty;
 
 	public string[] UserRoles => httpContextAccessor.HttpContext.User.GetUserRoles();
+
+	public string Email => httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.Email);
 }
 
 public static class ClaimsPrincipalExtensions

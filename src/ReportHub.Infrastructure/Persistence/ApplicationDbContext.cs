@@ -71,6 +71,7 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
 		builder.Entity<OrganizationMember>().HasQueryFilter(t => t.OrganizationId == service.OrganizationId && !t.IsDeleted);
 		builder.Entity<Plan>().HasQueryFilter(t => t.OrganizationId == service.OrganizationId && !t.IsDeleted);
 		builder.Entity<PlanItem>().HasQueryFilter(t => t.OrganizationId == service.OrganizationId && !t.IsDeleted);
+		builder.Entity<RefreshToken>().HasQueryFilter(t => !t.IsDeleted);
 		builder.Entity<Organization>().HasQueryFilter(t => !t.IsDeleted);
 		builder.Entity<OrganizationRole>().HasQueryFilter(t => !t.IsDeleted);
 		builder.Entity<Role>().HasQueryFilter(t => !t.IsDeleted);

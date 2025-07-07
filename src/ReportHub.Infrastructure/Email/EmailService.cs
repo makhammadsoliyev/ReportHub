@@ -2,7 +2,6 @@
 using MailKit.Security;
 using Microsoft.Extensions.Options;
 using MimeKit;
-using MimeKit.Text;
 using ReportHub.Application.Common.Interfaces.Services;
 
 namespace ReportHub.Infrastructure.Email;
@@ -11,13 +10,20 @@ public class EmailService(IOptions<SmtpEmailOptions> options) : IEmailService
 {
 	private readonly SmtpEmailOptions options = options.Value;
 
-	public async Task SendAsync(string toEmail, string subject, string body)
+	public async Task SendAsync(string toEmail, string subject, string body, byte[] attachment = null)
 	{
 		var message = new MimeMessage();
 		message.From.Add(new MailboxAddress("Umidbek Maxammadsoliyev", options.Email));
 		message.To.Add(new MailboxAddress("Dear User!", toEmail));
 		message.Subject = subject;
-		message.Body = new TextPart(TextFormat.Html) { Text = body };
+
+		var messageBody = new BodyBuilder { HtmlBody = body };
+		if (attachment is not null)
+		{
+			messageBody.Attachments.Add("report.xls", attachment);
+		}
+
+		message.Body = messageBody.ToMessageBody();
 
 		using var smtp = new SmtpClient();
 

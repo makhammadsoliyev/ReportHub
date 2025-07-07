@@ -16,6 +16,7 @@ using MongoDB.Bson.Serialization;
 using MongoDB.Bson.Serialization.Conventions;
 using MongoDB.Bson.Serialization.Serializers;
 using MongoDB.Driver;
+using Quartz;
 using ReportHub.Application.Common.Interfaces.Repositories;
 using ReportHub.Application.Common.Interfaces.Services;
 using ReportHub.Domain;
@@ -31,6 +32,7 @@ using ReportHub.Infrastructure.Persistence.Interceptors;
 using ReportHub.Infrastructure.Persistence.KeyVault;
 using ReportHub.Infrastructure.Persistence.MongoDb;
 using ReportHub.Infrastructure.Persistence.Repositories;
+using ReportHub.Infrastructure.Quartz;
 using ReportHub.Infrastructure.Time;
 using ReportHub.Infrastructure.Token;
 using ReportHub.Infrastructure.Users;
@@ -138,6 +140,8 @@ public static class DependencyInjection
 
 		services.AddScoped<IPdfService, PdfService>();
 		services.AddScoped<IAsposeService, AsposeService>();
+
+		services.AddQuartzServices();
 	}
 
 	private static void AddJwtAuthentication(this IServiceCollection services, IConfigurationBuilder configuration)
@@ -191,5 +195,12 @@ public static class DependencyInjection
 
 		services.AddSingleton<IMongoDatabase>(mongoClient.GetDatabase(options.DatabaseName));
 		services.AddSingleton<MongoDbContext>();
+	}
+
+	private static void AddQuartzServices(this IServiceCollection services)
+	{
+		services.AddQuartz();
+		services.AddQuartzHostedService(options => options.WaitForJobsToComplete = true);
+		services.AddSingleton<IQuartzJobService, QuartzJobService>();
 	}
 }
